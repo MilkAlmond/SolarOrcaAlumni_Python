@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="current_job_search">Job Search - SolarOrca</title>
+    <style>
+        :root {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="ocean"] {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="fall"] {
+            --primary: #D35400;
+            --secondary: #F39C12;
+            --background: #FDF2E3;
+            --card-bg: #FFF8F0;
+            --text: #5D4037;
+            --text-light: #8D6E63;
+            --border: #E8D5B5;
+        }
+        [data-theme="midnight"] {
+            --primary: #00B4D8;
+            --secondary: #7B2EDA;
+            --background: #0A1929;
+            --card-bg: #1E2A3A;
+            --text: #E0E0E0;
+            --text-light: #A0AAB5;
+            --border: #2A3A4A;
+        }
+        [data-theme="blossom"] {
+            --primary: #E8A2B0;
+            --secondary: #F5C6D0;
+            --background: #FFF5F7;
+            --card-bg: #FFFFFF;
+            --text: #5E4B56;
+            --text-light: #9A8B92;
+            --border: #F0DDE3;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: var(--background);
+            color: var(--text);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .menu {
+            margin-bottom: 20px;
+        }
+        .menu a {
+            margin-right: 15px;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .menu a:hover { text-decoration: underline; }
+        .search-box {
+            margin-bottom: 20px;
+        }
+        .search-box input {
+            padding: 8px;
+            width: 350px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            box-sizing: border-box;
+            background: var(--card-bg);
+            color: var(--text);
+        }
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .search-box button {
+            padding: 8px 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .search-box button:hover {
+            background: var(--secondary);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card-bg);
+        }
+        th, td {
+            border: 1px solid var(--border);
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background: var(--primary);
+            color: white;
+        }
+        .similarity-high {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .similarity-medium {
+            color: #ff9800;
+        }
+        .similarity-low {
+            color: #dc3545;
+        }
+        .no-results {
+            color: var(--text-light);
+            font-style: italic;
+        }
+        .result-count {
+            margin-bottom: 15px;
+            color: var(--text-light);
+        }
+        .pagination {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .pagination a {
+            margin: 0 5px;
+            padding: 5px 10px;
+            border: 1px solid var(--border);
+            text-decoration: none;
+            color: var(--primary);
+            background: var(--card-bg);
+            border-radius: 3px;
+        }
+        .pagination a:hover {
+            background: var(--secondary);
+            color: white;
+        }
+        .pagination .current {
+            padding: 5px 10px;
+            background: var(--primary);
+            color: white;
+            border: 1px solid var(--primary);
+            border-radius: 3px;
+        }
+        .clear-link {
+            margin-left: 10px;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .clear-link:hover {
+            text-decoration: underline;
+        }
+        .empty-state {
+            color: var(--text-light);
+            padding: 30px 0;
+        }
+
+        .jump-box {
+            margin-top: 15px;
+            text-align: right;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .jump-input {
+            width: 60px;
+            padding: 4px;
+            text-align: center;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            background: var(--card-bg);
+            color: var(--text);
+        }
+        .jump-button {
+            padding: 4px 10px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .jump-button:hover {
+            background: var(--secondary);
+        }
+
+        @media (max-width: 768px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            tr {
+                border: 1px solid var(--border);
+                margin-bottom: 10px;
+            }
+            td {
+                border: none;
+                border-bottom: 1px solid var(--border);
+                position: relative;
+                padding-left: 50%;
+            }
+            td:before {
+                position: absolute;
+                top: 8px;
+                left: 8px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                font-weight: bold;
+                content: attr(data-label);
+            }
+            .search-box input {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            .jump-box {
+                justify-content: center;
+            }
+        }
+    </style>
+    <script>
+        function jumpToPage() {
+            const page = document.getElementById('jumpPage').value;
+            const totalPages = parseInt(document.getElementById('jumpPage').max);
+            if (page && page >= 1 && page <= totalPages) {
+                const url = new URL(window.location.href);
+                url.searchParams.set('page', page);
+                window.location.href = url.toString();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const jumpInput = document.getElementById('jumpPage');
+            if (jumpInput) {
+                jumpInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        jumpToPage();
+                    }
+                });
+            }
+        });
+    </script>
+    <script>
+    (function() {
+        // 从 localStorage 读取已保存的主题
+        const theme = localStorage.getItem('selectedTheme') || 'ocean';
+
+        // 如果是自定义主题，直接覆盖 CSS 变量
+        if (theme === 'custom') {
+            const custom = localStorage.getItem('customTheme');
+            if (custom) {
+                try {
+                    const t = JSON.parse(custom);
+                    document.documentElement.style.setProperty('--primary', t.primary);
+                    document.documentElement.style.setProperty('--secondary', t.secondary);
+                    document.documentElement.style.setProperty('--background', t.background);
+                    document.documentElement.style.setProperty('--card-bg', t.cardBg);
+                    document.documentElement.style.setProperty('--text', t.text);
+                    // 移除 data-theme 属性，避免覆盖自定义变量
+                    document.documentElement.removeAttribute('data-theme');
+                    return;
+                } catch(e) {
+                    console.error('Failed to load custom theme', e);
+                }
+            }
+        }
+
+        // 否则，设置 data-theme 属性以匹配保存的主题
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+</script>
+</head>
+<body>
+
+<div class="container">
+    <!-- 导航菜单 -->
+    <div class="menu">
+        <a href="/home/" data-i18n="home">Home</a>
+        <a href="/profile/" data-i18n="my_profile">My Profile</a>
+        <a href="/settings/" data-i18n="settings">Settings</a>
+        <a href="/02_Web版本/classes" data-i18n="classes">Classes</a>
+        <a href="/02_Web版本/forum" data-i18n="forum">Forum</a>
+        <a href="/02_Web版本/jobs" data-i18n="job_search">Job Search</a>
+        {% if user_role == 'admin' %}
+        <a href="/admin-panel/users/" data-i18n="admin">Admin</a>
+        {% endif %}
+        <a href="/logout/" data-i18n="logout">Logout</a>
+        <span style="float:right;" data-i18n="welcome_prefix">Welcome, {{ user_name }}</span>
+    </div>
+
+    <h1 data-i18n="current_job_search">Current Job Search</h1>
+
+    <!-- 搜索框 -->
+    <div class="search-box">
+        <form method="get" action="/02_Web版本/jobs">
+            <input type="text" name="search" placeholder="Search by job title, employer, or industry... (fuzzy search enabled)" value="{{ search_keyword }}" data-i18n="search_placeholder">
+            <button type="submit" data-i18n="search">Search</button>
+            {% if search_keyword %}
+            <a href="/02_Web版本/jobs" class="clear-link" data-i18n="clear">Clear</a>
+            {% endif %}
+        </form>
+    </div>
+
+    {% if has_search %}
+        {% if results %}
+            <p class="result-count"><span data-i18n="found_results">Found</span> {{ total_results }} <span data-i18n="results_for">result(s) for</span> "{{ search_keyword }}".</p>
+
+            <!-- 搜索结果表格 -->
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th data-i18n="name">Name</th>
+                            <th data-i18n="highest_degree">Highest Degree</th>
+                            <th data-i18n="job_title">Job Title</th>
+                            <th data-i18n="employer">Employer</th>
+                            <th data-i18n="industry">Industry</th>
+                            <th data-i18n="since">Since</th>
+                            <th data-i18n="match">Match</th>
+                            <th data-i18n="action">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for result in results %}
+                        <tr>
+                            <td data-label="Name">{{ result.user_name }}</td>
+                            <td data-label="Highest Degree">{{ result.highest_degree }}</td>
+                            <td data-label="Job Title">{{ result.job_title }}</td>
+                            <td data-label="Employer">{{ result.employer }}</td>
+                            <td data-label="Industry">{{ result.industry }}</td>
+                            <td data-label="Since">{{ result.start_year }}</td>
+                            <td data-label="Match">
+                                <span class="
+                                    {% if result.similarity >= 80 %}similarity-high
+                                    {% elif result.similarity >= 50 %}similarity-medium
+                                    {% else %}similarity-low{% endif %}
+                                ">
+                                    {{ result.similarity|floatformat:0 }}%
+                                </span>
+                            </td>
+                            <td data-label="Action"><a href="/profile/{{ result.user_id }}/" data-i18n="view_profile">View Profile</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 分页 + 跳页 -->
+            {% if total_pages > 1 %}
+            <div class="pagination">
+                {% if current_page > 1 %}
+                <a href="/02_Web版本/jobs?search={{ search_keyword }}&page={{ current_page|add:'-1' }}" data-i18n="previous">Previous</a>
+                {% endif %}
+                <span class="current">{{ current_page }}</span>
+                {% if current_page < total_pages %}
+                <a href="/02_Web版本/jobs?search={{ search_keyword }}&page={{ current_page|add:'1' }}" data-i18n="next">Next</a>
+                {% endif %}
+            </div>
+
+            <!-- 跳页功能 -->
+            <div class="jump-box">
+                <span data-i18n="go_to_page">Go to page</span>
+                <input type="number" id="jumpPage" class="jump-input" min="1" max="{{ total_pages }}" value="{{ current_page }}">
+                <button class="jump-button" onclick="jumpToPage()" data-i18n="jump">Jump</button>
+                <span data-i18n="of">of {{ total_pages }}</span>
+            </div>
+            {% endif %}
+
+        {% else %}
+            <p class="no-results" data-i18n="no_alumni_found">No alumni found matching "{{ search_keyword }}".</p>
+        {% endif %}
+    {% else %}
+        <p class="empty-state" data-i18n="enter_keyword">Enter a keyword above to search for alumni by job title, employer, or industry.</p>
+    {% endif %}
+</div>
+
+</body>
+</html>

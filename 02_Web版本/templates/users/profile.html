@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% if is_own_profile %}<span data-i18n="my_profile">My Profile</span>{% else %}{{ profile_user.full_name }}<span data-i18n="profile_of_suffix">'s Profile</span>{% endif %} - <span data-i18n="site_title">SolarOrca</span>
+    </title>
+    <style>
+        :root {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="ocean"] {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="fall"] {
+            --primary: #D35400;
+            --secondary: #F39C12;
+            --background: #FDF2E3;
+            --card-bg: #FFF8F0;
+            --text: #5D4037;
+            --text-light: #8D6E63;
+            --border: #E8D5B5;
+        }
+        [data-theme="midnight"] {
+            --primary: #00B4D8;
+            --secondary: #7B2EDA;
+            --background: #0A1929;
+            --card-bg: #1E2A3A;
+            --text: #E0E0E0;
+            --text-light: #A0AAB5;
+            --border: #2A3A4A;
+        }
+        [data-theme="blossom"] {
+            --primary: #E8A2B0;
+            --secondary: #F5C6D0;
+            --background: #FFF5F7;
+            --card-bg: #FFFFFF;
+            --text: #5E4B56;
+            --text-light: #9A8B92;
+            --border: #F0DDE3;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.4;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .menu {
+            margin-bottom: 20px;
+        }
+
+        .menu a {
+            margin-right: 15px;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .menu a:hover {
+            color: var(--secondary);
+            text-decoration: underline;
+        }
+
+        .info-box {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .info-label {
+            font-weight: bold;
+            display: inline-block;
+            width: 100px;
+            color: var(--text);
+        }
+
+        .section-title {
+            color: var(--primary);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card-bg);
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid var(--border);
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background: var(--primary);
+            color: white;
+        }
+
+        .edit-link {
+            color: var(--primary);
+            margin-right: 10px;
+            text-decoration: none;
+        }
+
+        .edit-link:hover {
+            text-decoration: underline;
+        }
+
+        .delete-link {
+            color: #dc3545;
+            text-decoration: none;
+        }
+
+        .delete-link:hover {
+            text-decoration: underline;
+        }
+
+        .add-link {
+            display: inline-block;
+            margin-bottom: 10px;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .add-link:hover {
+            text-decoration: underline;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .empty-msg {
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        @media (max-width: 768px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
+            tr {
+                border: 1px solid var(--border);
+                margin-bottom: 10px;
+            }
+
+            td {
+                border: none;
+                border-bottom: 1px solid var(--border);
+                position: relative;
+                padding-left: 50%;
+            }
+
+            td:before {
+                position: absolute;
+                top: 8px;
+                left: 8px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                font-weight: bold;
+                content: attr(data-label);
+            }
+
+            .info-label {
+                width: auto;
+                display: block;
+                margin-bottom: 3px;
+            }
+        }
+    </style>
+    <script>
+    (function() {
+        // 从 localStorage 读取已保存的主题
+        const theme = localStorage.getItem('selectedTheme') || 'ocean';
+
+        // 如果是自定义主题，直接覆盖 CSS 变量
+        if (theme === 'custom') {
+            const custom = localStorage.getItem('customTheme');
+            if (custom) {
+                try {
+                    const t = JSON.parse(custom);
+                    document.documentElement.style.setProperty('--primary', t.primary);
+                    document.documentElement.style.setProperty('--secondary', t.secondary);
+                    document.documentElement.style.setProperty('--background', t.background);
+                    document.documentElement.style.setProperty('--card-bg', t.cardBg);
+                    document.documentElement.style.setProperty('--text', t.text);
+                    // 移除 data-theme 属性，避免覆盖自定义变量
+                    document.documentElement.removeAttribute('data-theme');
+                    return;
+                } catch(e) {
+                    console.error('Failed to load custom theme', e);
+                }
+            }
+        }
+
+        // 否则，设置 data-theme 属性以匹配保存的主题
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+</script>
+</head>
+<body>
+
+<div class="container">
+    <!-- 导航菜单 -->
+    <div class="menu">
+        <a href="/home/" data-i18n="home">Home</a>
+        <a href="/profile/" data-i18n="my_profile">My Profile</a>
+        <a href="/profile/edit/" data-i18n="edit_profile">Edit Profile</a>
+        <a href="/settings/" data-i18n="settings">Settings</a>
+        <a href="/02_Web版本/classes" data-i18n="classes">Classes</a>
+        <a href="/02_Web版本/forum" data-i18n="forum">Forum</a>
+        <a href="/02_Web版本/jobs" data-i18n="job_search">Job Search</a>
+        {% if user_role == 'admin' %}
+        <a href="/admin-panel/users/" data-i18n="admin">Admin</a>
+        {% endif %}
+        <a href="/logout/" data-i18n="logout">Logout</a>
+        <span style="float:right;"><span data-i18n="welcome_prefix">Welcome</span>, {{ user_name }}</span>
+    </div>
+
+    <h1>
+        {% if is_own_profile %}<span data-i18n="my_profile">My Profile</span>{% else %}{{ profile_user.full_name }}<span data-i18n="profile_of_suffix">'s Profile</span>{% endif %}
+    </h1>
+
+    <!-- 显示后端返回的消息 -->
+    {% if messages %}
+        {% for msg in messages %}
+            <div class="message {% if msg.tags == 'success' %}success{% else %}error{% endif %}">
+                {{ msg }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- 基本信息 -->
+    <div class="info-box">
+        <p><span class="info-label" data-i18n="full_name">Full Name:</span> {{ profile_user.full_name }}</p>
+        <p><span class="info-label" data-i18n="email">Email:</span> {{ profile_user.email }}</p>
+        <p><span class="info-label" data-i18n="student_id">Student ID:</span> {{ profile_user.student_id }}</p>
+        <p><span class="info-label" data-i18n="role">Role:</span> {{ profile_user.role }}</p>
+        <p><span class="info-label" data-i18n="location">Location:</span>
+            {% if profile_user.location %}
+                {{ profile_user.location }}
+            {% else %}
+                <span data-i18n="not_specified">Not specified</span>
+            {% endif %}
+        </p>
+        <p><span class="info-label" data-i18n="class">Class:</span>
+            {% for class in classes %}
+                {{ class.faculty }} - {{ class.major }} ({{ class.graduation_year }})
+            {% empty %}
+                <span data-i18n="not_assigned">Not assigned</span>
+            {% endfor %}
+        </p>
+        {% if is_own_profile %}
+        <div style="margin-top: 10px;">
+            <a href="/profile/edit/" class="edit-link" data-i18n="edit_profile">✏️ Edit Profile</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- 学历背景 -->
+    <h2 class="section-title" data-i18n="academic_history">Academic History</h2>
+
+    {% if is_own_profile %}
+    <a href="/degree/add/" class="add-link" data-i18n="add_degree">+ Add Degree</a>
+    {% endif %}
+
+    {% if degrees %}
+    <div style="overflow-x: auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th data-i18n="degree">Degree</th>
+                    <th data-i18n="major">Major</th>
+                    <th data-i18n="institution">Institution</th>
+                    <th data-i18n="years">Years</th>
+                    <th data-i18n="minor">Minor</th>
+                    <th data-i18n="certificate">Certificate</th>
+                    <th data-i18n="transferred">Transferred</th>
+                    <th data-i18n="second_degree">Second Degree</th>
+                    {% if is_own_profile %}<th data-i18n="actions">Actions</th>{% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in degrees %}
+                <tr>
+                    <td data-label="Degree">{{ d.degree_type|default:"-" }}</td>
+                    <td data-label="Major">{{ d.major|default:"-" }}</td>
+                    <td data-label="Institution">{{ d.institution|default:"-" }}</td>
+                    <td data-label="Years">{{ d.start_year }} - {% if d.end_year %}{{ d.end_year }}{% else %}<span data-i18n="present">Present</span>{% endif %}</td>
+                    <td data-label="Minor">{{ d.minor|default:"-" }}</td>
+                    <td data-label="Certificate">{{ d.certificate|default:"-" }}</td>
+                    <td data-label="Transferred">
+                        {% if d.original_major %}
+                            <span data-i18n="from_label">From:</span> {{ d.original_major }}<br>
+                            <span data-i18n="year_label">Year:</span> {{ d.transfer_year }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td data-label="Second Degree">{{ d.second_degree|default:"-" }}</td>
+                    {% if is_own_profile %}
+                    <td data-label="Actions">
+                        <a href="/degree/edit/{{ d.degree_id }}/" class="edit-link" data-i18n="edit">Edit</a>
+                        <a href="/degree/delete/{{ d.degree_id }}/" class="delete-link" onclick="return confirm('Delete this degree?')" data-i18n="delete">Delete</a>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty-msg" data-i18n="no_degrees">No degrees added yet.</p>
+    {% endif %}
+
+    <!-- 科研经历 -->
+    <h2 class="section-title" data-i18n="research_positions">Research Positions</h2>
+
+    {% if is_own_profile %}
+    <a href="/research/add/" class="add-link" data-i18n="add_research_position">+ Add Research Position</a>
+    {% endif %}
+
+    {% if research_list %}
+    <div style="overflow-x: auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th data-i18n="position">Position</th>
+                    <th data-i18n="institution">Institution</th>
+                    <th data-i18n="department">Department</th>
+                    <th data-i18n="years">Years</th>
+                    {% if is_own_profile %}<th data-i18n="actions">Actions</th>{% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in research_list %}
+                <tr>
+                    <td data-label="Position">{{ r.position_type|default:"-" }}</td>
+                    <td data-label="Institution">{{ r.institution|default:"-" }}</td>
+                    <td data-label="Department">{{ r.department|default:"-" }}</td>
+                    <td data-label="Years">{{ r.start_year }} - {% if r.is_current %}<span data-i18n="present">Present</span>{% else %}{{ r.end_year }}{% endif %}</td>
+                    {% if is_own_profile %}
+                    <td data-label="Actions">
+                        <a href="/research/edit/{{ r.position_id }}/" class="edit-link" data-i18n="edit">Edit</a>
+                        <a href="/research/delete/{{ r.position_id }}/" class="delete-link" onclick="return confirm('Delete this research position?')" data-i18n="delete">Delete</a>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty-msg" data-i18n="no_research">No research positions added yet.</p>
+    {% endif %}
+
+    <!-- 工作经历 -->
+    <h2 class="section-title" data-i18n="work_history">Work History</h2>
+
+    {% if is_own_profile %}
+    <a href="/work/add/" class="add-link" data-i18n="add_work_experience">+ Add Work Experience</a>
+    {% endif %}
+
+    {% if work_list %}
+    <div style="overflow-x: auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th data-i18n="job_title">Job Title</th>
+                    <th data-i18n="employer">Employer</th>
+                    <th data-i18n="industry">Industry</th>
+                    <th data-i18n="years">Years</th>
+                    {% if is_own_profile %}<th data-i18n="actions">Actions</th>{% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for w in work_list %}
+                <tr>
+                    <td data-label="Job Title">{{ w.job_title|default:"-" }}</td>
+                    <td data-label="Employer">{{ w.employer|default:"-" }}</td>
+                    <td data-label="Industry">{{ w.industry|default:"-" }}</td>
+                    <td data-label="Years">{{ w.start_year }} - {% if w.is_current %}<span data-i18n="present">Present</span>{% else %}{{ w.end_year }}{% endif %}</td>
+                    {% if is_own_profile %}
+                    <td data-label="Actions">
+                        <a href="/work/edit/{{ w.work_id }}/" class="edit-link" data-i18n="edit">Edit</a>
+                        <a href="/work/delete/{{ w.work_id }}/" class="delete-link" onclick="return confirm('Delete this work experience?')" data-i18n="delete">Delete</a>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty-msg" data-i18n="no_work">No work experience added yet.</p>
+    {% endif %}
+
+    <a href="javascript:history.back()" class="back-link" data-i18n="back">← Back</a>
+</div>
+
+</body>
+</html>

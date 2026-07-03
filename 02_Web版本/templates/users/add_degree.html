@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Degree - SolarOrca</title>
+    <style>
+        :root {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="ocean"] {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="fall"] {
+            --primary: #D35400;
+            --secondary: #F39C12;
+            --background: #FDF2E3;
+            --card-bg: #FFF8F0;
+            --text: #5D4037;
+            --text-light: #8D6E63;
+            --border: #E8D5B5;
+        }
+        [data-theme="midnight"] {
+            --primary: #00B4D8;
+            --secondary: #7B2EDA;
+            --background: #0A1929;
+            --card-bg: #1E2A3A;
+            --text: #E0E0E0;
+            --text-light: #A0AAB5;
+            --border: #2A3A4A;
+        }
+        [data-theme="blossom"] {
+            --primary: #E8A2B0;
+            --secondary: #F5C6D0;
+            --background: #FFF5F7;
+            --card-bg: #FFFFFF;
+            --text: #5E4B56;
+            --text-light: #9A8B92;
+            --border: #F0DDE3;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: var(--background);
+            color: var(--text);
+        }
+        .container { max-width: 600px; margin: 0 auto; }
+        .menu {
+            margin-bottom: 20px;
+        }
+        .menu a {
+            margin-right: 15px;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .menu a:hover { text-decoration: underline; }
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        label {
+            display: inline-block;
+            width: 130px;
+            font-weight: bold;
+            color: var(--text);
+        }
+        input, select {
+            width: 280px;
+            padding: 5px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            box-sizing: border-box;
+            background: var(--card-bg);
+            color: var(--text);
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        button {
+            padding: 8px 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover { background: var(--secondary); }
+        .cancel-link {
+            margin-left: 15px;
+            color: var(--text-light);
+            text-decoration: none;
+        }
+        .cancel-link:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+            background: #f8d7da;
+            color: #721c24;
+        }
+        small {
+            color: var(--text-light);
+            font-size: 12px;
+        }
+        .form-actions {
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .form-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            label {
+                width: auto;
+                margin-bottom: 5px;
+            }
+            input, select {
+                width: 100%;
+                max-width: 280px;
+            }
+        }
+    </style>
+    <script>
+        // 前端表单验证：开始年份不能晚于结束年份
+        function validateForm() {
+            const startYear = document.getElementById('startYear').value;
+            const endYear = document.getElementById('endYear').value;
+
+            if (endYear && parseInt(startYear) > parseInt(endYear)) {
+                // TODO: replace with localized message using a translation key
+                alert('Start year must be less than or equal to end year.');
+                return false;
+            }
+            return true;
+        }
+    </script>
+    <script>
+    (function() {
+        // 从 localStorage 读取已保存的主题
+        const theme = localStorage.getItem('selectedTheme') || 'ocean';
+
+        // 如果是自定义主题，直接覆盖 CSS 变量
+        if (theme === 'custom') {
+            const custom = localStorage.getItem('customTheme');
+            if (custom) {
+                try {
+                    const t = JSON.parse(custom);
+                    document.documentElement.style.setProperty('--primary', t.primary);
+                    document.documentElement.style.setProperty('--secondary', t.secondary);
+                    document.documentElement.style.setProperty('--background', t.background);
+                    document.documentElement.style.setProperty('--card-bg', t.cardBg);
+                    document.documentElement.style.setProperty('--text', t.text);
+                    // 移除 data-theme 属性，避免覆盖自定义变量
+                    document.documentElement.removeAttribute('data-theme');
+                    return;
+                } catch(e) {
+                    console.error('Failed to load custom theme', e);
+                }
+            }
+        }
+
+        // 否则，设置 data-theme 属性以匹配保存的主题
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+</script>
+</head>
+<body>
+
+<div class="container">
+    <!-- 导航菜单 -->
+    <div class="menu">
+        <a href="/home/" data-i18n="home">Home</a>
+        <a href="/profile/" data-i18n="my_profile">My Profile</a>
+        <a href="/settings/" data-i18n="settings">Settings</a>
+        <a href="/02_Web版本/classes" data-i18n="classes">Classes</a>
+        <a href="/02_Web版本/forum" data-i18n="forum">Forum</a>
+        <a href="/02_Web版本/jobs" data-i18n="job_search">Job Search</a>
+        <a href="/logout/" data-i18n="logout">Logout</a>
+        <span style="float:right;"><span data-i18n="welcome_prefix">Welcome</span>, {{ user_name }}</span>
+    </div>
+
+    <h1 data-i18n="add_degree">Add Degree</h1>
+
+    <!-- 显示后端返回的错误消息 -->
+    {% if messages %}
+        {% for msg in messages %}
+            <div class="message">{{ msg }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- 添加学位表单 -->
+    <form method="post" onsubmit="return validateForm()">
+        {% csrf_token %}
+
+        <!-- 学位类型 -->
+        <div class="form-group">
+            <label for="degree_type" data-i18n="degree_type">Degree Type:</label>
+            <select id="degree_type" name="degree_type">
+                <option value="Bachelor" data-i18n="bachelor">Bachelor</option>
+                <option value="Master" data-i18n="master">Master</option>
+                <option value="PhD" data-i18n="phd">PhD</option>
+            </select>
+        </div>
+
+        <!-- 专业 -->
+        <div class="form-group">
+            <label for="major" data-i18n="major">Major:</label>
+            <input type="text" id="major" name="major" required>
+        </div>
+
+        <!-- 学校 -->
+        <div class="form-group">
+            <label for="institution" data-i18n="institution">Institution:</label>
+            <input type="text" id="institution" name="institution" required>
+        </div>
+
+        <!-- 开始年份 -->
+        <div class="form-group">
+            <label for="start_year" data-i18n="start_year">Start Year:</label>
+            <input type="number" id="start_year" name="start_year" min="1950" max="2030" required>
+        </div>
+
+        <!-- 结束年份（留空表示在读） -->
+        <div class="form-group">
+            <label for="end_year" data-i18n="end_year">End Year:</label>
+            <input type="number" id="end_year" name="end_year" min="1950" max="2030">
+            <small data-i18n="leave_empty_current">(leave empty for current/ongoing)</small>
+        </div>
+
+        <!-- 辅修学位 -->
+        <div class="form-group">
+            <label for="minor" data-i18n="minor">Minor (辅修学位):</label>
+            <input type="text" id="minor" name="minor">
+        </div>
+
+        <!-- 辅修专业/证书 -->
+        <div class="form-group">
+            <label for="certificate" data-i18n="certificate">Certificate (辅修专业):</label>
+            <input type="text" id="certificate" name="certificate">
+        </div>
+
+        <!-- 原专业（转专业前） -->
+        <div class="form-group">
+            <label for="original_major" data-i18n="transferred_from">Transferred From:</label>
+            <input type="text" id="original_major" name="original_major">
+        </div>
+
+        <!-- 转专业年份 -->
+        <div class="form-group">
+            <label for="transfer_year" data-i18n="transfer_year">Transfer Year:</label>
+            <input type="number" id="transfer_year" name="transfer_year" min="1950" max="2030">
+        </div>
+
+        <!-- 第二学位 -->
+        <div class="form-group">
+            <label for="second_degree" data-i18n="second_degree">Second Degree:</label>
+            <input type="text" id="second_degree" name="second_degree">
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" data-i18n="add_degree">Add Degree</button>
+            <a href="/profile/" class="cancel-link" data-i18n="cancel">Cancel</a>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

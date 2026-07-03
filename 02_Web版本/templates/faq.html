@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="faq">FAQ - SolarOrca</title>
+    <script src="/js/theme.js"></script>
+    <style>
+        :root {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="ocean"] {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="fall"] {
+            --primary: #D35400;
+            --secondary: #F39C12;
+            --background: #FDF2E3;
+            --card-bg: #FFF8F0;
+            --text: #5D4037;
+            --text-light: #8D6E63;
+            --border: #E8D5B5;
+        }
+        [data-theme="midnight"] {
+            --primary: #00B4D8;
+            --secondary: #7B2EDA;
+            --background: #0A1929;
+            --card-bg: #1E2A3A;
+            --text: #E0E0E0;
+            --text-light: #A0AAB5;
+            --border: #2A3A4A;
+        }
+        [data-theme="blossom"] {
+            --primary: #E8A2B0;
+            --secondary: #F5C6D0;
+            --background: #FFF5F7;
+            --card-bg: #FFFFFF;
+            --text: #5E4B56;
+            --text-light: #9A8B92;
+            --border: #F0DDE3;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .menu {
+            margin-bottom: 20px;
+        }
+
+        .menu a {
+            margin-right: 15px;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .menu a:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            color: var(--primary);
+        }
+
+        .faq-section {
+            margin-bottom: 30px;
+        }
+
+        .faq-item {
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+        }
+
+        .question {
+            font-weight: bold;
+            font-size: 18px;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .answer {
+            color: var(--text);
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            padding: 8px;
+            width: 300px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            background: var(--card-bg);
+            color: var(--text);
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .search-button {
+            padding: 8px 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .search-button:hover {
+            background: var(--secondary);
+        }
+
+        .language-buttons {
+            text-align: right;
+            margin-bottom: 10px;
+        }
+
+        .lang-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .lang-btn:first-child {
+            margin-right: 5px;
+        }
+
+        .lang-btn:hover {
+            background: var(--secondary);
+        }
+
+        .back-to-top {
+            text-align: right;
+            margin-top: 30px;
+        }
+
+        .back-to-top a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .back-to-top a:hover {
+            text-decoration: underline;
+        }
+
+        .faq-hidden {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .search-box {
+                flex-direction: column;
+            }
+            .search-input {
+                max-width: 100%;
+                width: 100%;
+            }
+        }
+    </style>
+    <script>
+        function searchFAQ() {
+            const searchInput = document.getElementById('searchInput');
+            const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+            const items = document.querySelectorAll('.faq-item');
+
+            items.forEach(function(item) {
+                const text = item.textContent.toLowerCase();
+                if (searchTerm === '' || text.includes(searchTerm)) {
+                    item.classList.remove('faq-hidden');
+                } else {
+                    item.classList.add('faq-hidden');
+                }
+            });
+        }
+
+        function clearSearch() {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.value = '';
+            }
+            const items = document.querySelectorAll('.faq-item');
+            items.forEach(function(item) {
+                item.classList.remove('faq-hidden');
+            });
+        }
+
+        window.searchFAQ = searchFAQ;
+        window.clearSearch = clearSearch;
+    </script>
+    <script>
+    (function() {
+        // 从 localStorage 读取已保存的主题
+        const theme = localStorage.getItem('selectedTheme') || 'ocean';
+
+        // 如果是自定义主题，直接覆盖 CSS 变量
+        if (theme === 'custom') {
+            const custom = localStorage.getItem('customTheme');
+            if (custom) {
+                try {
+                    const t = JSON.parse(custom);
+                    document.documentElement.style.setProperty('--primary', t.primary);
+                    document.documentElement.style.setProperty('--secondary', t.secondary);
+                    document.documentElement.style.setProperty('--background', t.background);
+                    document.documentElement.style.setProperty('--card-bg', t.cardBg);
+                    document.documentElement.style.setProperty('--text', t.text);
+                    // 移除 data-theme 属性，避免覆盖自定义变量
+                    document.documentElement.removeAttribute('data-theme');
+                    return;
+                } catch(e) {
+                    console.error('Failed to load custom theme', e);
+                }
+            }
+        }
+
+        // 否则，设置 data-theme 属性以匹配保存的主题
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+</script>
+</head>
+<body>
+
+<div class="container">
+    <div class="language-buttons">
+        <button class="lang-btn" onclick="window.publicSetLanguage('en')" data-i18n="english">English</button>
+        <button class="lang-btn" onclick="window.publicSetLanguage('zh')" data-i18n="chinese">中文</button>
+    </div>
+
+    <!-- 导航菜单 -->
+    <div class="menu">
+        <a href="/" data-i18n="home">Home</a>
+        <a href="/login/" data-i18n="login">Login</a>
+        <a href="/register/" data-i18n="signup">Sign Up</a>
+        <a href="/faq/" data-i18n="faq">FAQ</a>
+        {% if user_name %}
+        <span style="float:right;"><span data-i18n="welcome_prefix">Welcome</span>, {{ user_name }}</span>
+        {% endif %}
+    </div>
+
+    <h1 data-i18n="frequently_asked_questions">Frequently Asked Questions</h1>
+
+    <!-- 搜索框 -->
+    <div class="search-box">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search questions..." data-i18n-placeholder="faq_search_placeholder" onkeyup="searchFAQ()">
+        <button class="search-button" onclick="clearSearch()" data-i18n="clear">Clear</button>
+    </div>
+
+    <!-- FAQ 列表 -->
+    <div class="faq-section">
+
+        <div class="faq-item">
+            <div class="question" data-i18n="faq_q1">1. I can't create an account. What should I do?</div>
+            <div class="answer" data-i18n="faq_a1">Check that you are using a valid student ID and entered the correct graduation year. If the problem persists, contact the alumni office.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question" data-i18n="faq_q2">2. I forgot my student ID. How can I get it?</div>
+            <div class="answer" data-i18n="faq_a2">Contact the alumni office at +86 123 4567 8901 (8am-12pm or 2pm-5pm weekdays) or email support@solarorca.edu.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question" data-i18n="faq_q3">3. I graduated but my graduation year isn't recognized.</div>
+            <div class="answer" data-i18n="faq_a3">Make sure you are entering the year you actually completed your degree, not the year you started. If you graduated before 1990, please contact support for manual verification.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question" data-i18n="faq_q4">4. I have multiple degrees. Which graduation year do I enter?</div>
+            <div class="answer" data-i18n="faq_a4">Enter the graduation year for your first/the earliest degree (e.g., your Bachelor's). Once logged in, you can add your other degrees (Master's, PhD, etc.) to your profile.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question" data-i18n="faq_q5">5. How do I verify my alumni status?</div>
+            <div class="answer" data-i18n="faq_a5">Enter your Student ID and Graduation Year on the signup form. The system checks these against alumni records. Once matched, your account is verified immediately.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question" data-i18n="faq_q6">6. My signup page looks weird. Help!</div>
+            <div class="answer" data-i18n="faq_a6">Please use a PC (desktop or laptop) to sign up. Our website has not yet been optimized for mobile devices.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question" data-i18n="faq_q7">7. What browsers are supported?</div>
+            <div class="answer" data-i18n="faq_a7">Our website works best with Chrome, Firefox, Edge, and Safari (latest versions). Internet Explorer is not supported.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question" data-i18n="faq_q8">8. How do I reset my password?</div>
+            <div class="answer" data-i18n="faq_a8">Click "Forgot Password" on the login page, enter your email address, and follow the instructions in the reset link sent to your email.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question" data-i18n="faq_q9">9. Can current students use this system?</div>
+            <div class="answer" data-i18n="faq_a9">Yes, current students can browse public threads and view class information, but they cannot post until they graduate.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question" data-i18n="faq_q10">10. How do I update my profile information?</div>
+            <div class="answer" data-i18n="faq_a10">Log in and go to "My Profile" → "Edit Profile". You can update your name, email, job information, academic history, and work history.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question" data-i18n="faq_q11">11. What happens if I forget to verify my email?</div>
+            <div class="answer" data-i18n="faq_a11">You will not be able to access alumni-only features until you complete email verification. The verification code expires in 10 minutes, but you can request a new one.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question" data-i18n="faq_q12">12. Is my personal information safe?</div>
+            <div class="answer" data-i18n="faq_a12">Yes, we take privacy seriously. You control who can see your profile, email, and phone number in the Privacy Settings.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question" data-i18n="faq_q13">13. How do I report inappropriate content?</div>
+            <div class="answer" data-i18n="faq_a13">Click the "Report" button under any thread or reply. Select a reason and submit. An admin will review your report.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question" data-i18n="faq_q14">14. Can I delete my account?</div>
+            <div class="answer" data-i18n="faq_a14">Yes, go to Settings → Danger Zone → Delete Account. This action is permanent and cannot be undone.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question" data-i18n="faq_q15">15. Who do I contact for technical support?</div>
+            <div class="answer" data-i18n="faq_a15">Email support@solarorca.edu or call +86 123 4567 8901 during business hours (8am-12pm, 2pm-5pm weekdays).</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="question" data-i18n="faq_q16">16. Why can't I see certain threads?</div>
+            <div class="answer" data-i18n="faq_a16">Some threads are marked "Alumni Only" and are only visible to verified alumni. If you are an alumnus, make sure your account is verified.</div>
+        </div>
+
+    </div>
+
+    <div class="back-to-top">
+        <a href="#" data-i18n="back_to_top">↑ Back to Top</a>
+    </div>
+</div>
+
+</body>
+</html>

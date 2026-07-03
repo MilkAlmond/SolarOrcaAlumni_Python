@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="site_title">Home - SolarOrca</title>
+    <style>
+        :root {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="ocean"] {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="fall"] {
+            --primary: #D35400;
+            --secondary: #F39C12;
+            --background: #FDF2E3;
+            --card-bg: #FFF8F0;
+            --text: #5D4037;
+            --text-light: #8D6E63;
+            --border: #E8D5B5;
+        }
+        [data-theme="midnight"] {
+            --primary: #00B4D8;
+            --secondary: #7B2EDA;
+            --background: #0A1929;
+            --card-bg: #1E2A3A;
+            --text: #E0E0E0;
+            --text-light: #A0AAB5;
+            --border: #2A3A4A;
+        }
+        [data-theme="blossom"] {
+            --primary: #E8A2B0;
+            --secondary: #F5C6D0;
+            --background: #FFF5F7;
+            --card-bg: #FFFFFF;
+            --text: #5E4B56;
+            --text-light: #9A8B92;
+            --border: #F0DDE3;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--background);
+            margin: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+        .menu a {
+            margin-left: 15px;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .menu a:hover {
+            text-decoration: underline;
+        }
+        .welcome {
+            font-size: 18px;
+            color: var(--text);
+        }
+        .role-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            background: var(--primary);
+            color: white;
+        }
+        .nav-links {
+            margin-top: 20px;
+        }
+        .nav-links a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+        .home-description {
+            margin-top: 30px;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+    </style>
+    <script>
+    (function() {
+        // 从 localStorage 读取已保存的主题
+        const theme = localStorage.getItem('selectedTheme') || 'ocean';
+
+        // 如果是自定义主题，直接覆盖 CSS 变量
+        if (theme === 'custom') {
+            const custom = localStorage.getItem('customTheme');
+            if (custom) {
+                try {
+                    const t = JSON.parse(custom);
+                    document.documentElement.style.setProperty('--primary', t.primary);
+                    document.documentElement.style.setProperty('--secondary', t.secondary);
+                    document.documentElement.style.setProperty('--background', t.background);
+                    document.documentElement.style.setProperty('--card-bg', t.cardBg);
+                    document.documentElement.style.setProperty('--text', t.text);
+                    // 移除 data-theme 属性，避免覆盖自定义变量
+                    document.documentElement.removeAttribute('data-theme');
+                    return;
+                } catch(e) {
+                    console.error('Failed to load custom theme', e);
+                }
+            }
+        }
+
+        // 否则，设置 data-theme 属性以匹配保存的主题
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+</script>
+</head>
+<body>
+    <div class="container">
+        <!-- 欢迎信息 -->
+        <div class="header">
+            <span class="welcome">
+                <span data-i18n="welcome_prefix">Welcome</span>, {{ user_name }}
+                <span class="role-badge">{{ user_role }}</span>
+            </span>
+            <div class="menu">
+                <a href="/logout/" data-i18n="logout">Logout</a>
+            </div>
+        </div>
+
+        <!-- 导航菜单 -->
+        <div class="nav-links">
+            <a href="/profile/" data-i18n="my_profile">My Profile</a> |
+            <a href="/02_Web版本/classes" data-i18n="classes">Classes</a> |
+            <a href="/02_Web版本/forum" data-i18n="forum">Forum</a> |
+            <a href="/02_Web版本/jobs" data-i18n="job_search">Job Search</a> |
+            <a href="/02_Web版本/stats" data-i18n="statistics">Statistics</a>
+            {% if user_role == 'admin' %}
+            | <a href="/admin-panel/users/" data-i18n="admin">Admin Panel</a>
+            {% endif %}
+            | <a href="/settings/" data-i18n="settings">Settings</a>
+        </div>
+
+        <p class="home-description" data-i18n="home_welcome_description">
+            Welcome to the SolarOrca Alumni System. Use the navigation above to explore.
+        </p>
+    </div>
+</body>
+</html>

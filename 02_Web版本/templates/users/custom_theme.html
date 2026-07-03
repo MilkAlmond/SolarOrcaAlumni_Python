@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="custom_theme_title">Custom Theme - SolarOrca</title>
+    <script src="/js/theme.js"></script>
+    <style>
+        /* 内联定义所有变量和样式，不依赖外部 CSS */
+        :root {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="ocean"] {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="fall"] {
+            --primary: #D35400;
+            --secondary: #F39C12;
+            --background: #FDF2E3;
+            --card-bg: #FFF8F0;
+            --text: #5D4037;
+            --text-light: #8D6E63;
+            --border: #E8D5B5;
+        }
+        [data-theme="midnight"] {
+            --primary: #00B4D8;
+            --secondary: #7B2EDA;
+            --background: #0A1929;
+            --card-bg: #1E2A3A;
+            --text: #E0E0E0;
+            --text-light: #A0AAB5;
+            --border: #2A3A4A;
+        }
+        [data-theme="blossom"] {
+            --primary: #E8A2B0;
+            --secondary: #F5C6D0;
+            --background: #FFF5F7;
+            --card-bg: #FFFFFF;
+            --text: #5E4B56;
+            --text-light: #9A8B92;
+            --border: #F0DDE3;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: var(--background);
+            color: var(--text);
+            transition: all 0.3s ease;
+            line-height: 1.4;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .menu {
+            margin-bottom: 20px;
+        }
+        .menu a {
+            margin-right: 15px;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .menu a:hover {
+            color: var(--secondary);
+            text-decoration: underline;
+        }
+
+        .section {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+        .section h3 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+
+        .color-row {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .color-label {
+            width: 140px;
+            font-weight: bold;
+            color: var(--text);
+        }
+        .color-picker {
+            width: 80px;
+            height: 40px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            background: var(--card-bg);
+            border-radius: 3px;
+        }
+        .color-picker:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .color-preview {
+            width: 30px;
+            height: 30px;
+            border-radius: 3px;
+            display: inline-block;
+            vertical-align: middle;
+            border: 1px solid var(--border);
+        }
+        .color-description {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        button {
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: var(--secondary);
+        }
+        .discard-button {
+            background: #999;
+        }
+        .discard-button:hover {
+            background: #777;
+        }
+
+        .button-group {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .preview-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        .preview-demo {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .sample-card {
+            background: var(--card-bg);
+            padding: 5px 10px;
+            border-radius: 3px;
+            border: 1px solid var(--border);
+        }
+        .theme-tip {
+            margin-top: 15px;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        @media (max-width: 600px) {
+            .color-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .color-label {
+                width: auto;
+            }
+        }
+    </style>
+    <script>
+        (function() {
+            const DEFAULT_THEME = {
+                primary: '#006994',
+                secondary: '#48CAE4',
+                background: '#F0F8FF',
+                cardBg: '#FFFFFF',
+                text: '#1A3A4A'
+            };
+
+            const primaryColorInput = document.getElementById('primaryColor');
+            const secondaryColorInput = document.getElementById('secondaryColor');
+            const backgroundColorInput = document.getElementById('backgroundColor');
+            const cardBgColorInput = document.getElementById('cardBgColor');
+            const textColorInput = document.getElementById('textColor');
+
+            const primaryPreview = document.getElementById('primaryPreview');
+            const secondaryPreview = document.getElementById('secondaryPreview');
+            const bgPreview = document.getElementById('bgPreview');
+            const cardBgPreview = document.getElementById('cardBgPreview');
+            const textPreview = document.getElementById('textPreview');
+
+            const applyBtn = document.getElementById('applyBtn');
+            const discardBtn = document.getElementById('discardBtn');
+
+            let savedThemeValues = { ...DEFAULT_THEME };
+
+            function getCssVariable(name) {
+                const value = getComputedStyle(document.documentElement).getPropertyValue(name);
+                return value ? value.trim() : DEFAULT_THEME[name.replace('--', '')];
+            }
+
+            function updatePreviews() {
+                primaryPreview.style.backgroundColor = primaryColorInput.value;
+                secondaryPreview.style.backgroundColor = secondaryColorInput.value;
+                bgPreview.style.backgroundColor = backgroundColorInput.value;
+                cardBgPreview.style.backgroundColor = cardBgColorInput.value;
+                textPreview.style.backgroundColor = textColorInput.value;
+            }
+
+            function applyTheme(primary, secondary, bg, cardBg, text) {
+                document.documentElement.style.setProperty('--primary', primary);
+                document.documentElement.style.setProperty('--secondary', secondary);
+                document.documentElement.style.setProperty('--background', bg);
+                document.documentElement.style.setProperty('--card-bg', cardBg);
+                document.documentElement.style.setProperty('--text', text);
+            }
+
+            function getCurrentTheme() {
+                return {
+                    primary: primaryColorInput.value,
+                    secondary: secondaryColorInput.value,
+                    background: backgroundColorInput.value,
+                    cardBg: cardBgColorInput.value,
+                    text: textColorInput.value
+                };
+            }
+
+            function onColorChange() {
+                updatePreviews();
+                const theme = getCurrentTheme();
+                applyTheme(theme.primary, theme.secondary, theme.background, theme.cardBg, theme.text);
+            }
+
+            function applyCustomTheme() {
+                const theme = getCurrentTheme();
+                localStorage.setItem('customTheme', JSON.stringify(theme));
+                localStorage.setItem('selectedTheme', 'custom');
+                savedThemeValues = { ...theme };
+                alert('Custom theme saved! It will load automatically on all pages.');
+            }
+
+            function discardPreview() {
+                primaryColorInput.value = savedThemeValues.primary;
+                secondaryColorInput.value = savedThemeValues.secondary;
+                backgroundColorInput.value = savedThemeValues.background;
+                cardBgColorInput.value = savedThemeValues.cardBg;
+                textColorInput.value = savedThemeValues.text;
+
+                updatePreviews();
+                applyTheme(
+                    savedThemeValues.primary,
+                    savedThemeValues.secondary,
+                    savedThemeValues.background,
+                    savedThemeValues.cardBg,
+                    savedThemeValues.text
+                );
+            }
+
+            function loadSavedTheme() {
+                const customThemeJson = localStorage.getItem('customTheme');
+
+                if (customThemeJson) {
+                    try {
+                        const theme = JSON.parse(customThemeJson);
+                        savedThemeValues = { ...theme };
+
+                        primaryColorInput.value = theme.primary;
+                        secondaryColorInput.value = theme.secondary;
+                        backgroundColorInput.value = theme.background;
+                        cardBgColorInput.value = theme.cardBg;
+                        textColorInput.value = theme.text;
+
+                        updatePreviews();
+                        applyTheme(theme.primary, theme.secondary, theme.background, theme.cardBg, theme.text);
+                    } catch (e) {
+                        console.error('Error loading custom theme:', e);
+                        useDefaultValues();
+                    }
+                } else {
+                    savedThemeValues = {
+                        primary: getCssVariable('--primary'),
+                        secondary: getCssVariable('--secondary'),
+                        background: getCssVariable('--background'),
+                        cardBg: getCssVariable('--card-bg'),
+                        text: getCssVariable('--text')
+                    };
+                    primaryColorInput.value = savedThemeValues.primary;
+                    secondaryColorInput.value = savedThemeValues.secondary;
+                    backgroundColorInput.value = savedThemeValues.background;
+                    cardBgColorInput.value = savedThemeValues.cardBg;
+                    textColorInput.value = savedThemeValues.text;
+                    updatePreviews();
+                }
+            }
+
+            function useDefaultValues() {
+                primaryColorInput.value = DEFAULT_THEME.primary;
+                secondaryColorInput.value = DEFAULT_THEME.secondary;
+                backgroundColorInput.value = DEFAULT_THEME.background;
+                cardBgColorInput.value = DEFAULT_THEME.cardBg;
+                textColorInput.value = DEFAULT_THEME.text;
+                updatePreviews();
+            }
+
+            function attachEvents() {
+                primaryColorInput.addEventListener('input', onColorChange);
+                secondaryColorInput.addEventListener('input', onColorChange);
+                backgroundColorInput.addEventListener('input', onColorChange);
+                cardBgColorInput.addEventListener('input', onColorChange);
+                textColorInput.addEventListener('input', onColorChange);
+
+                applyBtn.addEventListener('click', applyCustomTheme);
+                discardBtn.addEventListener('click', discardPreview);
+            }
+
+            function initPreviews() {
+                primaryPreview.style.backgroundColor = primaryColorInput.value;
+                secondaryPreview.style.backgroundColor = secondaryColorInput.value;
+                bgPreview.style.backgroundColor = backgroundColorInput.value;
+                cardBgPreview.style.backgroundColor = cardBgColorInput.value;
+                textPreview.style.backgroundColor = textColorInput.value;
+            }
+
+            loadSavedTheme();
+            initPreviews();
+            attachEvents();
+        })();
+    </script>
+    <script>
+    (function() {
+        // 从 localStorage 读取已保存的主题
+        const theme = localStorage.getItem('selectedTheme') || 'ocean';
+
+        // 如果是自定义主题，直接覆盖 CSS 变量
+        if (theme === 'custom') {
+            const custom = localStorage.getItem('customTheme');
+            if (custom) {
+                try {
+                    const t = JSON.parse(custom);
+                    document.documentElement.style.setProperty('--primary', t.primary);
+                    document.documentElement.style.setProperty('--secondary', t.secondary);
+                    document.documentElement.style.setProperty('--background', t.background);
+                    document.documentElement.style.setProperty('--card-bg', t.cardBg);
+                    document.documentElement.style.setProperty('--text', t.text);
+                    // 移除 data-theme 属性，避免覆盖自定义变量
+                    document.documentElement.removeAttribute('data-theme');
+                    return;
+                } catch(e) {
+                    console.error('Failed to load custom theme', e);
+                }
+            }
+        }
+
+        // 否则，设置 data-theme 属性以匹配保存的主题
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+</script>
+</head>
+<body>
+
+<div class="container">
+    <!-- 导航菜单 -->
+    <div class="menu">
+        <a href="/home/" data-i18n="home">Home</a>
+        <a href="/profile/" data-i18n="my_profile">My Profile</a>
+        <a href="/edit-profile/" data-i18n="edit_profile">Edit Profile</a>
+        <a href="/settings/" data-i18n="settings">Settings</a>
+        <a href="/custom-theme/" data-i18n="custom_theme">Custom Theme</a>
+        <a href="/02_Web版本/classes" data-i18n="classes">Classes</a>
+        <a href="/02_Web版本/forum" data-i18n="forum">Forum</a>
+        <a href="/02_Web版本/jobs" data-i18n="job_search">Job Search</a>
+        {% if user_role == 'admin' %}
+        <a href="/admin-panel/users/" data-i18n="admin">Admin</a>
+        {% endif %}
+        <a href="/logout/" data-i18n="logout">Logout</a>
+        <span style="float:right;"><span data-i18n="welcome_prefix">Welcome</span>, {{ user_name }}</span>
+    </div>
+
+    <h1 data-i18n="custom_theme_designer">🎨 Custom Theme Designer</h1>
+
+    <!-- 颜色选择区域 -->
+    <div class="section">
+        <h3 data-i18n="custom_colors">Custom Colors</h3>
+
+        <div class="color-row">
+            <label for="primaryColor" class="color-label" data-i18n="primary_color">Primary Color:</label>
+            <input type="color" id="primaryColor" class="color-picker" value="#006994">
+            <span id="primaryPreview" class="color-preview"></span>
+            <span class="color-description" data-i18n="primary_desc">Buttons, links, headers</span>
+        </div>
+
+        <div class="color-row">
+            <label for="secondaryColor" class="color-label" data-i18n="secondary_color">Secondary Color:</label>
+            <input type="color" id="secondaryColor" class="color-picker" value="#48CAE4">
+            <span id="secondaryPreview" class="color-preview"></span>
+            <span class="color-description" data-i18n="secondary_desc">Hover states, accents</span>
+        </div>
+
+        <div class="color-row">
+            <label for="backgroundColor" class="color-label" data-i18n="background_color">Background Color:</label>
+            <input type="color" id="backgroundColor" class="color-picker" value="#F0F8FF">
+            <span id="bgPreview" class="color-preview"></span>
+            <span class="color-description" data-i18n="bg_desc">Page background</span>
+        </div>
+
+        <div class="color-row">
+            <label for="cardBgColor" class="color-label" data-i18n="card_bg_color">Card Background:</label>
+            <input type="color" id="cardBgColor" class="color-picker" value="#FFFFFF">
+            <span id="cardBgPreview" class="color-preview"></span>
+            <span class="color-description" data-i18n="card_bg_desc">Cards, modals, sections</span>
+        </div>
+
+        <div class="color-row">
+            <label for="textColor" class="color-label" data-i18n="text_color">Text Color:</label>
+            <input type="color" id="textColor" class="color-picker" value="#1A3A4A">
+            <span id="textPreview" class="color-preview"></span>
+            <span class="color-description" data-i18n="text_desc">Main text color</span>
+        </div>
+
+        <div class="button-group">
+            <button id="applyBtn" data-i18n="apply_save">💾 Apply & Save Theme</button>
+            <button id="discardBtn" class="discard-button" data-i18n="discard">🗑️ Discard Changes</button>
+        </div>
+
+        <p class="theme-tip" data-i18n="theme_tip">
+            💡 Tip: Colors change live on the page as you adjust them. Click "Apply & Save" to keep your theme, or "Discard" to revert to your saved theme.
+        </p>
+    </div>
+
+    <!-- 实时预览 -->
+    <div class="preview-card">
+        <h3 data-i18n="live_preview">Live Preview</h3>
+        <p data-i18n="preview_desc">This entire page updates as you change colors.</p>
+        <div class="preview-demo">
+            <button style="background: var(--primary);" data-i18n="sample_button">Sample Button</button>
+            <a href="#" style="color: var(--primary);" data-i18n="sample_link">Sample Link</a>
+            <div class="sample-card" data-i18n="sample_card">Sample Card</div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

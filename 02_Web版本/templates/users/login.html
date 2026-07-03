@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="login_page_title">Login - SolarOrca</title>
+    <style>
+        :root {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="ocean"] {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="fall"] {
+            --primary: #D35400;
+            --secondary: #F39C12;
+            --background: #FDF2E3;
+            --card-bg: #FFF8F0;
+            --text: #5D4037;
+            --text-light: #8D6E63;
+            --border: #E8D5B5;
+        }
+        [data-theme="midnight"] {
+            --primary: #00B4D8;
+            --secondary: #7B2EDA;
+            --background: #0A1929;
+            --card-bg: #1E2A3A;
+            --text: #E0E0E0;
+            --text-light: #A0AAB5;
+            --border: #2A3A4A;
+        }
+        [data-theme="blossom"] {
+            --primary: #E8A2B0;
+            --secondary: #F5C6D0;
+            --background: #FFF5F7;
+            --card-bg: #FFFFFF;
+            --text: #5E4B56;
+            --text-light: #9A8B92;
+            --border: #F0DDE3;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--background);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 350px;
+        }
+        h2 {
+            text-align: center;
+            color: var(--primary);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--text);
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            box-sizing: border-box;
+            background: var(--card-bg);
+            color: var(--text);
+        }
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: var(--secondary);
+        }
+        .error {
+            color: #dc3545;
+            padding: 10px;
+            background: #fdd;
+            border-radius: 3px;
+            margin-bottom: 15px;
+        }
+        .demo-accounts {
+            margin-top: 20px;
+            padding: 10px;
+            background: var(--background);
+            border-radius: 5px;
+            border: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--text);
+        }
+        .demo-accounts ul {
+            padding-left: 20px;
+        }
+        .link-group {
+            margin-top: 15px;
+            text-align: center;
+        }
+        .link-group a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .link-group a:hover {
+            text-decoration: underline;
+        }
+        .link-group span {
+            color: var(--text);
+        }
+    </style>
+    <script>
+    (function() {
+        // 从 localStorage 读取已保存的主题
+        const theme = localStorage.getItem('selectedTheme') || 'ocean';
+
+        // 如果是自定义主题，直接覆盖 CSS 变量
+        if (theme === 'custom') {
+            const custom = localStorage.getItem('customTheme');
+            if (custom) {
+                try {
+                    const t = JSON.parse(custom);
+                    document.documentElement.style.setProperty('--primary', t.primary);
+                    document.documentElement.style.setProperty('--secondary', t.secondary);
+                    document.documentElement.style.setProperty('--background', t.background);
+                    document.documentElement.style.setProperty('--card-bg', t.cardBg);
+                    document.documentElement.style.setProperty('--text', t.text);
+                    // 移除 data-theme 属性，避免覆盖自定义变量
+                    document.documentElement.removeAttribute('data-theme');
+                    return;
+                } catch(e) {
+                    console.error('Failed to load custom theme', e);
+                }
+            }
+        }
+
+        // 否则，设置 data-theme 属性以匹配保存的主题
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+</script>
+</head>
+<body>
+    <div class="container">
+        <h2 data-i18n="site_title">SolarOrca Alumni</h2>
+
+        <!-- 显示后端返回的错误消息 -->
+        {% if messages %}
+            {% for msg in messages %}
+                <div class="error">{{ msg }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- 登录表单 -->
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="email" data-i18n="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" data-i18n-placeholder="login_email_placeholder" required>
+            </div>
+            <div class="form-group">
+                <label for="password" data-i18n="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" data-i18n-placeholder="login_password_placeholder" required>
+            </div>
+            <button type="submit" data-i18n="sign_in">Sign In</button>
+        </form>
+
+        <!-- 辅助链接 -->
+        <div class="link-group">
+            <a href="/forgot-password/" data-i18n="forgot_password">Forgot Password?</a>
+        </div>
+        <div class="link-group">
+            <span data-i18n="dont_have_account">Don't have an account? </span><a href="/register/" data-i18n="sign_up_here">Sign up here</a>
+        </div>
+
+        <!-- 演示账号列表（从数据库动态读取） -->
+        {% if demo_accounts %}
+        <div class="demo-accounts">
+            <strong data-i18n="demo_accounts">Demo Accounts:</strong>
+            <ul>
+                {% for account in demo_accounts %}
+                <li>{{ account.email }} / {{ account.password }} ({{ account.role }} - {{ account.name }})</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

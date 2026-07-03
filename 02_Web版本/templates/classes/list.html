@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="classes">Classes - SolarOrca</title>
+    <style>
+        :root {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="ocean"] {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="fall"] {
+            --primary: #D35400;
+            --secondary: #F39C12;
+            --background: #FDF2E3;
+            --card-bg: #FFF8F0;
+            --text: #5D4037;
+            --text-light: #8D6E63;
+            --border: #E8D5B5;
+        }
+        [data-theme="midnight"] {
+            --primary: #00B4D8;
+            --secondary: #7B2EDA;
+            --background: #0A1929;
+            --card-bg: #1E2A3A;
+            --text: #E0E0E0;
+            --text-light: #A0AAB5;
+            --border: #2A3A4A;
+        }
+        [data-theme="blossom"] {
+            --primary: #E8A2B0;
+            --secondary: #F5C6D0;
+            --background: #FFF5F7;
+            --card-bg: #FFFFFF;
+            --text: #5E4B56;
+            --text-light: #9A8B92;
+            --border: #F0DDE3;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: var(--background);
+            color: var(--text);
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .menu {
+            margin-bottom: 20px;
+        }
+        .menu a {
+            margin-right: 15px;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .menu a:hover { text-decoration: underline; }
+        .search-box {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .search-box form {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .search-input {
+            padding: 8px;
+            width: 300px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            box-sizing: border-box;
+            background: var(--card-bg);
+            color: var(--text);
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .search-button {
+            padding: 8px 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .search-button:hover {
+            background: var(--secondary);
+        }
+        .search-mode {
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            cursor: pointer;
+            background: var(--card-bg);
+            color: var(--text);
+        }
+        .clear-link {
+            color: var(--primary);
+            padding: 8px 5px;
+            text-decoration: none;
+        }
+        .clear-link:hover { text-decoration: underline; }
+        .add-class-btn {
+            background: var(--primary);
+            color: white;
+            padding: 8px 15px;
+            text-decoration: none;
+            border-radius: 3px;
+            display: inline-block;
+        }
+        .add-class-btn:hover {
+            background: var(--secondary);
+        }
+        .class-card {
+            border: 1px solid var(--border);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background: var(--card-bg);
+            position: relative;
+        }
+        .class-card:hover {
+            background: var(--background);
+        }
+        .class-clickable {
+            cursor: pointer;
+        }
+        .admin-actions {
+            margin-top: 10px;
+            text-align: right;
+            border-top: 1px solid var(--border);
+            padding-top: 8px;
+        }
+        .admin-actions a {
+            margin-left: 10px;
+            font-size: 12px;
+        }
+        .edit-link {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .edit-link:hover { text-decoration: underline; }
+        .delete-link {
+            color: #dc3545;
+            text-decoration: none;
+        }
+        .delete-link:hover { text-decoration: underline; }
+        .result-count {
+            margin-bottom: 15px;
+        }
+        small {
+            color: var(--text-light);
+            font-size: 12px;
+        }
+        .click-hint {
+            display: inline-block;
+            margin-left: 10px;
+            color: var(--text-light);
+            font-size: 12px;
+        }
+        .pagination {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .pagination a, .pagination span {
+            display: inline-block;
+            padding: 5px 10px;
+            margin: 0 2px;
+            border: 1px solid var(--border);
+            text-decoration: none;
+            color: var(--primary);
+            background: var(--card-bg);
+        }
+        .pagination a:hover {
+            background: var(--background);
+        }
+        .pagination .current {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        .page-size-selector {
+            margin-bottom: 15px;
+            text-align: right;
+        }
+        .page-size-selector select {
+            padding: 5px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            background: var(--card-bg);
+            color: var(--text);
+        }
+        .jump-box {
+            margin-top: 15px;
+            text-align: right;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .jump-input {
+            width: 60px;
+            padding: 4px;
+            text-align: center;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            background: var(--card-bg);
+            color: var(--text);
+        }
+        .jump-button {
+            padding: 4px 10px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .jump-button:hover {
+            background: var(--secondary);
+        }
+
+        @media (max-width: 650px) {
+            .search-box {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .search-box form {
+                flex-direction: column;
+                width: 100%;
+            }
+            .search-input, .search-mode {
+                width: 100%;
+            }
+            .search-button {
+                width: 100%;
+            }
+        }
+    </style>
+    <script>
+        function confirmDelete(className) {
+            return confirm('Delete class "' + className + '" and remove all students from it? This cannot be undone.');
+        }
+
+        function goToPage(page) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('page', page);
+            window.location.href = url.toString();
+        }
+
+        function changePageSize() {
+            const select = document.getElementById('pageSizeSelect');
+            const url = new URL(window.location.href);
+            url.searchParams.set('pageSize', select.value);
+            url.searchParams.set('page', 1);
+            window.location.href = url.toString();
+        }
+
+        function jumpToPage() {
+            const page = document.getElementById('jumpPage').value;
+            const totalPages = parseInt(document.getElementById('jumpPage').max);
+            if (page && page >= 1 && page <= totalPages) {
+                goToPage(page);
+            }
+        }
+    </script>
+    <script>
+    (function() {
+        // 从 localStorage 读取已保存的主题
+        const theme = localStorage.getItem('selectedTheme') || 'ocean';
+
+        // 如果是自定义主题，直接覆盖 CSS 变量
+        if (theme === 'custom') {
+            const custom = localStorage.getItem('customTheme');
+            if (custom) {
+                try {
+                    const t = JSON.parse(custom);
+                    document.documentElement.style.setProperty('--primary', t.primary);
+                    document.documentElement.style.setProperty('--secondary', t.secondary);
+                    document.documentElement.style.setProperty('--background', t.background);
+                    document.documentElement.style.setProperty('--card-bg', t.cardBg);
+                    document.documentElement.style.setProperty('--text', t.text);
+                    // 移除 data-theme 属性，避免覆盖自定义变量
+                    document.documentElement.removeAttribute('data-theme');
+                    return;
+                } catch(e) {
+                    console.error('Failed to load custom theme', e);
+                }
+            }
+        }
+
+        // 否则，设置 data-theme 属性以匹配保存的主题
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+</script>
+</head>
+<body>
+
+<div class="container">
+    <!-- 导航菜单 -->
+    <div class="menu">
+        <a href="/home/" data-i18n="home">Home</a>
+        <a href="/profile/" data-i18n="my_profile">My Profile</a>
+        <a href="/settings/" data-i18n="settings">Settings</a>
+        <a href="/02_Web版本/classes" data-i18n="classes">Classes</a>
+        <a href="/02_Web版本/forum" data-i18n="forum">Forum</a>
+        <a href="/02_Web版本/jobs" data-i18n="job_search">Job Search</a>
+        {% if user_role == 'admin' %}
+        <a href="/admin-panel/users/" data-i18n="admin">Admin</a>
+        {% endif %}
+        <a href="/logout/" data-i18n="logout">Logout</a>
+        <span style="float:right;" data-i18n="welcome_prefix">Welcome, {{ user_name }}</span>
+    </div>
+
+    <h1 data-i18n="alumni_classes">Alumni Classes</h1>
+
+    <!-- 搜索框 -->
+    <div class="search-box">
+        <form action="/02_Web版本/classes" method="get">
+            <input type="text" name="search" class="search-input"
+                   placeholder="Search by faculty, major, or class number..."
+                   value="{{ search }}" data-i18n="search_placeholder">
+            <select name="mode" class="search-mode">
+                <option value="exact" {% if mode == 'exact' %}selected{% endif %} data-i18n="exact_search">Exact Search</option>
+                <option value="fuzzy" {% if mode == 'fuzzy' %}selected{% endif %} data-i18n="fuzzy_search">Fuzzy Search (typo tolerant)</option>
+            </select>
+            <button type="submit" class="search-button" data-i18n="search">Search</button>
+            {% if search %}
+            <a href="/02_Web版本/classes" class="clear-link" data-i18n="clear">Clear</a>
+            {% endif %}
+        </form>
+        {% if user_role == 'admin' %}
+        <a href="/02_Web版本/classes/add/" class="add-class-btn" data-i18n="add_new_class">+ Add New Class</a>
+        {% endif %}
+    </div>
+
+    {% if classes %}
+    <p class="result-count"><span data-i18n="found_classes">Found</span> {{ total_results }} <span data-i18n="classes_count">class(es)</span>.</p>
+
+    <!-- 每页显示数量选择器 -->
+    <div class="page-size-selector">
+        <span data-i18n="show_per_page">Show per page:</span>
+        <select id="pageSizeSelect" onchange="changePageSize()">
+            <option value="10" {% if page_size == 10 %}selected{% endif %}>10</option>
+            <option value="20" {% if page_size == 20 %}selected{% endif %}>20</option>
+            <option value="50" {% if page_size == 50 %}selected{% endif %}>50</option>
+            <option value="100" {% if page_size == 100 %}selected{% endif %}>100</option>
+        </select>
+    </div>
+
+    <!-- 班级卡片列表 -->
+    <div class="class-list">
+        {% for c in classes %}
+        <div class="class-card">
+            <div class="class-clickable" onclick="location.href='../../02_Web版本/classes/detail/{{ c.class_id }}/'">
+                <strong>{{ c.faculty }}</strong><br>
+                {{ c.major }} - <span data-i18n="class">Class</span> {{ c.class_number }} -
+                <span data-i18n="class_of">Class of</span> {{ c.graduation_year }}
+                <small class="click-hint" data-i18n="click_to_view">(Click to view class list)</small>
+            </div>
+
+            {% if user_role == 'admin' %}
+            <div class="admin-actions">
+                <a href="/02_Web版本/classes/edit/{{ c.class_id }}/" class="edit-link" data-i18n="edit">Edit</a>
+                <a href="/02_Web版本/classes/delete/{{ c.class_id }}/" class="delete-link"
+                   onclick="return confirmDelete('{{ c.faculty }} - {{ c.class_number }}')" data-i18n="delete">Delete</a>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- 分页控件 -->
+    {% if total_pages > 1 %}
+    <div class="pagination">
+        {% if current_page > 1 %}
+        <a href="#" onclick="goToPage({{ current_page|add:'-1' }}); return false;" data-i18n="previous">Previous</a>
+        {% endif %}
+
+        {% for p in total_pages|make_list %}
+            {% if forloop.counter == current_page %}
+            <span class="current">{{ current_page }}</span>
+            {% elif forloop.counter <= current_page|add:'2' and forloop.counter >= current_page|add:'-2' %}
+            <a href="#" onclick="goToPage({{ forloop.counter }}); return false;">{{ forloop.counter }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if current_page < total_pages %}
+        <a href="#" onclick="goToPage({{ current_page|add:'1' }}); return false;" data-i18n="next">Next</a>
+        {% endif %}
+    </div>
+
+    <!-- 跳页 -->
+    <div class="jump-box">
+        <span data-i18n="go_to_page">Go to page</span>
+        <input type="number" id="jumpPage" class="jump-input" min="1" max="{{ total_pages }}" value="{{ current_page }}">
+        <button class="jump-button" onclick="jumpToPage()" data-i18n="jump">Jump</button>
+        <span data-i18n="of">of {{ total_pages }}</span>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <p data-i18n="no_classes_found">No classes found.</p>
+    {% endif %}
+</div>
+
+</body>
+</html>

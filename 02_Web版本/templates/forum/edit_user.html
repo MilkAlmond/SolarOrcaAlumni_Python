@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="edit_user">Edit User - SolarOrca</title>
+    <style>
+        :root {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="ocean"] {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="fall"] {
+            --primary: #D35400;
+            --secondary: #F39C12;
+            --background: #FDF2E3;
+            --card-bg: #FFF8F0;
+            --text: #5D4037;
+            --text-light: #8D6E63;
+            --border: #E8D5B5;
+        }
+        [data-theme="midnight"] {
+            --primary: #00B4D8;
+            --secondary: #7B2EDA;
+            --background: #0A1929;
+            --card-bg: #1E2A3A;
+            --text: #E0E0E0;
+            --text-light: #A0AAB5;
+            --border: #2A3A4A;
+        }
+        [data-theme="blossom"] {
+            --primary: #E8A2B0;
+            --secondary: #F5C6D0;
+            --background: #FFF5F7;
+            --card-bg: #FFFFFF;
+            --text: #5E4B56;
+            --text-light: #9A8B92;
+            --border: #F0DDE3;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: var(--background);
+            color: var(--text);
+        }
+        .container { max-width: 650px; margin: 0 auto; }
+        .menu { margin-bottom: 20px; }
+        .menu a {
+            margin-right: 15px;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .menu a:hover { text-decoration: underline; }
+        .form-group { margin-bottom: 15px; }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            box-sizing: border-box;
+            background: var(--card-bg);
+            color: var(--text);
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        input[disabled] {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        button {
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: var(--secondary);
+        }
+        .cancel-link {
+            margin-left: 15px;
+            color: var(--text-light);
+            text-decoration: none;
+        }
+        .cancel-link:hover {
+            text-decoration: underline;
+            color: var(--primary);
+        }
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+        }
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+    <script>
+    (function() {
+        // 从 localStorage 读取已保存的主题
+        const theme = localStorage.getItem('selectedTheme') || 'ocean';
+
+        // 如果是自定义主题，直接覆盖 CSS 变量
+        if (theme === 'custom') {
+            const custom = localStorage.getItem('customTheme');
+            if (custom) {
+                try {
+                    const t = JSON.parse(custom);
+                    document.documentElement.style.setProperty('--primary', t.primary);
+                    document.documentElement.style.setProperty('--secondary', t.secondary);
+                    document.documentElement.style.setProperty('--background', t.background);
+                    document.documentElement.style.setProperty('--card-bg', t.cardBg);
+                    document.documentElement.style.setProperty('--text', t.text);
+                    // 移除 data-theme 属性，避免覆盖自定义变量
+                    document.documentElement.removeAttribute('data-theme');
+                    return;
+                } catch(e) {
+                    console.error('Failed to load custom theme', e);
+                }
+            }
+        }
+
+        // 否则，设置 data-theme 属性以匹配保存的主题
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+</script>
+</head>
+<body>
+    <div class="container">
+        <!-- 导航菜单 -->
+        <div class="menu">
+            <a href="/home/" data-i18n="home">Home</a>
+            <a href="/profile/" data-i18n="my_profile">My Profile</a>
+            <a href="/02_Web版本/classes" data-i18n="classes">Classes</a>
+            <a href="/02_Web版本/forum" data-i18n="forum">Forum</a>
+            <a href="/02_Web版本/jobs" data-i18n="job_search">Job Search</a>
+            <a href="/admin-panel/users/" data-i18n="user_management">User Management</a>
+            <a href="/admin-panel/reports/" data-i18n="reports">Reports</a>
+            <a href="/logout/" data-i18n="logout">Logout</a>
+            <span style="float:right;" data-i18n="welcome_prefix">Welcome, {{ user_name }}</span>
+        </div>
+
+        <h1><span data-i18n="edit_user">Edit User:</span> {{ edit_user.full_name }}</h1>
+
+        <!-- 显示后端返回的消息 -->
+        {% if messages %}
+            {% for msg in messages %}
+                <div class="message {% if msg.tags == 'success' %}success{% else %}error{% endif %}">
+                    {{ msg }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- 编辑用户表单 -->
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- 姓名 -->
+            <div class="form-group">
+                <label for="full_name" data-i18n="full_name">Full Name</label>
+                <input type="text" id="full_name" name="full_name" value="{{ edit_user.full_name }}" required>
+            </div>
+
+            <!-- 邮箱 -->
+            <div class="form-group">
+                <label for="email" data-i18n="email">Email</label>
+                <input type="email" id="email" name="email" value="{{ edit_user.email }}" required>
+            </div>
+
+            <!-- 学号（不可修改） -->
+            <div class="form-group">
+                <label for="student_id" data-i18n="student_id">Student ID</label>
+                <input type="text" id="student_id" value="{{ edit_user.student_id }}" disabled>
+            </div>
+
+            <!-- 所在地 -->
+            <div class="form-group">
+                <label for="location" data-i18n="location">Location</label>
+                <input type="text" id="location" name="location" value="{{ edit_user.location|default:'' }}">
+            </div>
+
+            <!-- 角色 -->
+            <div class="form-group">
+                <label for="role" data-i18n="role">Role</label>
+                <select id="role" name="role">
+                    <option value="student" {% if edit_user.role == 'student' %}selected{% endif %} data-i18n="student">Student</option>
+                    <option value="alumni" {% if edit_user.role == 'alumni' %}selected{% endif %} data-i18n="alumni">Alumni</option>
+                    <option value="teacher" {% if edit_user.role == 'teacher' %}selected{% endif %} data-i18n="teacher">Teacher</option>
+                    <option value="admin" {% if edit_user.role == 'admin' %}selected{% endif %} data-i18n="admin">Admin</option>
+                </select>
+            </div>
+
+            <!-- 班级 -->
+            <div class="form-group">
+                <label for="class_id" data-i18n="class">Class</label>
+                <select id="class_id" name="class_id">
+                    <option value="" data-i18n="no_class_assigned">-- No Class Assigned --</option>
+                    {% for class in classes %}
+                    <option value="{{ class.class_id }}" {% if current_class_id == class.class_id %}selected{% endif %}>
+                        {{ class.faculty }} | {{ class.major }} | <span data-i18n="class">Class</span> {{ class.class_number }} | <span data-i18n="class_of">Class of</span> {{ class.graduation_year }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" data-i18n="save_changes">Save Changes</button>
+            <a href="/admin-panel/users/" class="cancel-link" data-i18n="cancel">Cancel</a>
+        </form>
+    </div>
+</body>
+</html>

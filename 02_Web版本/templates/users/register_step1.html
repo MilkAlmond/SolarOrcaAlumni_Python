@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="register_step1_title">Register - Step 1</title>
+    <style>
+        :root {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="ocean"] {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="fall"] {
+            --primary: #D35400;
+            --secondary: #F39C12;
+            --background: #FDF2E3;
+            --card-bg: #FFF8F0;
+            --text: #5D4037;
+            --text-light: #8D6E63;
+            --border: #E8D5B5;
+        }
+        [data-theme="midnight"] {
+            --primary: #00B4D8;
+            --secondary: #7B2EDA;
+            --background: #0A1929;
+            --card-bg: #1E2A3A;
+            --text: #E0E0E0;
+            --text-light: #A0AAB5;
+            --border: #2A3A4A;
+        }
+        [data-theme="blossom"] {
+            --primary: #E8A2B0;
+            --secondary: #F5C6D0;
+            --background: #FFF5F7;
+            --card-bg: #FFFFFF;
+            --text: #5E4B56;
+            --text-light: #9A8B92;
+            --border: #F0DDE3;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--background);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 400px;
+        }
+        h2 {
+            text-align: center;
+            color: var(--primary);
+        }
+        .step-info {
+            text-align: center;
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--text);
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            box-sizing: border-box;
+            background: var(--card-bg);
+            color: var(--text);
+        }
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: var(--secondary);
+        }
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .link-group {
+            margin-top: 15px;
+            text-align: center;
+        }
+        .link-group a {
+            color: var(--primary);
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .link-group a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <script>
+    (function() {
+        // 从 localStorage 读取已保存的主题
+        const theme = localStorage.getItem('selectedTheme') || 'ocean';
+
+        // 如果是自定义主题，直接覆盖 CSS 变量
+        if (theme === 'custom') {
+            const custom = localStorage.getItem('customTheme');
+            if (custom) {
+                try {
+                    const t = JSON.parse(custom);
+                    document.documentElement.style.setProperty('--primary', t.primary);
+                    document.documentElement.style.setProperty('--secondary', t.secondary);
+                    document.documentElement.style.setProperty('--background', t.background);
+                    document.documentElement.style.setProperty('--card-bg', t.cardBg);
+                    document.documentElement.style.setProperty('--text', t.text);
+                    // 移除 data-theme 属性，避免覆盖自定义变量
+                    document.documentElement.removeAttribute('data-theme');
+                    return;
+                } catch(e) {
+                    console.error('Failed to load custom theme', e);
+                }
+            }
+        }
+
+        // 否则，设置 data-theme 属性以匹配保存的主题
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+</script>
+</head>
+<body>
+    <div class="container">
+        <h2 data-i18n="create_account">Create an Account</h2>
+        <p class="step-info" data-i18n="step1">Step 1: Verify Alumni</p>
+
+        <!-- 显示后端返回的错误消息 -->
+        {% if messages %}
+            {% for msg in messages %}
+                <div class="message">{{ msg }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- 注册步骤1表单 -->
+        <form method="post" action="/register/step1/">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="studentId" data-i18n="student_id">Student ID</label>
+                <input type="text" id="studentId" name="student_id" placeholder="Enter your student ID" data-i18n-placeholder="student_id_placeholder" required>
+            </div>
+            <div class="form-group">
+                <label for="graduationYear" data-i18n="graduation_year">Graduation Year</label>
+                <input type="number" id="graduationYear" name="graduation_year" placeholder="e.g., 2024" data-i18n-placeholder="graduation_year_placeholder" min="1950" max="2030" required>
+            </div>
+            <button type="submit" data-i18n="verify_continue">Verify & Continue</button>
+        </form>
+
+        <!-- 辅助链接 -->
+        <div class="link-group">
+            <a href="/faq/" data-i18n="faq">FAQ</a>
+            <a href="/login/" data-i18n="already_have_account">Already have an account? Sign in</a>
+        </div>
+    </div>
+</body>
+</html>

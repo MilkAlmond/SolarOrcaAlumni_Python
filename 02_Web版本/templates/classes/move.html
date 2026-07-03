@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="move_student_title">Move Student - SolarOrca</title>
+    <style>
+        :root {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="ocean"] {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="fall"] {
+            --primary: #D35400;
+            --secondary: #F39C12;
+            --background: #FDF2E3;
+            --card-bg: #FFF8F0;
+            --text: #5D4037;
+            --text-light: #8D6E63;
+            --border: #E8D5B5;
+        }
+        [data-theme="midnight"] {
+            --primary: #00B4D8;
+            --secondary: #7B2EDA;
+            --background: #0A1929;
+            --card-bg: #1E2A3A;
+            --text: #E0E0E0;
+            --text-light: #A0AAB5;
+            --border: #2A3A4A;
+        }
+        [data-theme="blossom"] {
+            --primary: #E8A2B0;
+            --secondary: #F5C6D0;
+            --background: #FFF5F7;
+            --card-bg: #FFFFFF;
+            --text: #5E4B56;
+            --text-light: #9A8B92;
+            --border: #F0DDE3;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: var(--background);
+            color: var(--text);
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .menu {
+            margin-bottom: 20px;
+        }
+        .menu a {
+            margin-right: 15px;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .menu a:hover {
+            text-decoration: underline;
+        }
+        .info-box {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+        .info-label {
+            font-weight: bold;
+            display: inline-block;
+            width: 120px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .form-label {
+            display: inline-block;
+            width: 140px;
+            font-weight: bold;
+            color: var(--text);
+        }
+        select {
+            width: 320px;
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            background: var(--card-bg);
+            color: var(--text);
+        }
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        button {
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: var(--secondary);
+        }
+        .back-link {
+            margin-top: 20px;
+            display: inline-block;
+            color: var(--text-light);
+            text-decoration: none;
+        }
+        .back-link:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        @media (max-width: 600px) {
+            .form-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .form-label {
+                width: auto;
+                margin-bottom: 5px;
+            }
+            select, button {
+                width: 100%;
+                max-width: 320px;
+            }
+        }
+    </style>
+    <script>
+    (function() {
+        // 从 localStorage 读取已保存的主题
+        const theme = localStorage.getItem('selectedTheme') || 'ocean';
+
+        // 如果是自定义主题，直接覆盖 CSS 变量
+        if (theme === 'custom') {
+            const custom = localStorage.getItem('customTheme');
+            if (custom) {
+                try {
+                    const t = JSON.parse(custom);
+                    document.documentElement.style.setProperty('--primary', t.primary);
+                    document.documentElement.style.setProperty('--secondary', t.secondary);
+                    document.documentElement.style.setProperty('--background', t.background);
+                    document.documentElement.style.setProperty('--card-bg', t.cardBg);
+                    document.documentElement.style.setProperty('--text', t.text);
+                    // 移除 data-theme 属性，避免覆盖自定义变量
+                    document.documentElement.removeAttribute('data-theme');
+                    return;
+                } catch(e) {
+                    console.error('Failed to load custom theme', e);
+                }
+            }
+        }
+
+        // 否则，设置 data-theme 属性以匹配保存的主题
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+</script>
+</head>
+<body>
+
+<div class="container">
+    <!-- 导航菜单 -->
+    <div class="menu">
+        <a href="/home/" data-i18n="home">Home</a>
+        <a href="/profile/" data-i18n="my_profile">My Profile</a>
+        <a href="/settings/" data-i18n="settings">Settings</a>
+        <a href="/02_Web版本/classes" data-i18n="classes">Classes</a>
+        <a href="/02_Web版本/forum" data-i18n="forum">Forum</a>
+        <a href="/02_Web版本/jobs" data-i18n="job_search">Job Search</a>
+        {% if user_role == 'admin' %}
+        <a href="/admin-panel/users/" data-i18n="admin">Admin</a>
+        {% endif %}
+        <a href="/logout/" data-i18n="logout">Logout</a>
+        <span style="float:right;" data-i18n="welcome_prefix">Welcome, {{ user_name }}</span>
+    </div>
+
+    <h1 data-i18n="move_student_title">Move Student to Another Class</h1>
+
+    <!-- 显示后端返回的消息 -->
+    {% if messages %}
+        {% for msg in messages %}
+            <div class="message {% if msg.tags == 'success' %}success{% else %}error{% endif %}">
+                {{ msg }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- 学生信息 -->
+    <div class="info-box">
+        <p><span class="info-label" data-i18n="student_name_label">Student Name:</span> {{ student.full_name }}</p>
+        <p><span class="info-label" data-i18n="student_id">Student ID:</span> {{ student.student_id }}</p>
+        <p><span class="info-label" data-i18n="current_class_label">Current Class:</span>
+            {{ from_class.faculty }} - {{ from_class.major }} ({{ from_class.graduation_year }})
+        </p>
+    </div>
+
+    <!-- 移动学生表单 -->
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="student_id" value="{{ student.user_id }}">
+        <input type="hidden" name="from_class_id" value="{{ from_class.class_id }}">
+
+        <div class="form-group">
+            <label for="to_class_id" class="form-label" data-i18n="select_new_class">Select New Class:</label>
+            <select id="to_class_id" name="to_class_id" required>
+                <option value="" data-i18n="select_a_class">-- Select a class --</option>
+                {% for class in all_classes %}
+                <option value="{{ class.class_id }}">
+                    {{ class.faculty }} | {{ class.major }} | <span data-i18n="class">Class</span> {{ class.class_number }} | <span data-i18n="class_of">Class of</span> {{ class.graduation_year }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" data-i18n="move_student_btn">Move Student</button>
+            <a href="/02_Web版本/classes/detail/{{ from_class.class_id }}/" class="back-link" data-i18n="cancel_and_go_back">← Cancel and go back</a>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

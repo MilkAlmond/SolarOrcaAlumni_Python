@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="statistics">Statistics - SolarOrca</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="ocean"] {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="fall"] {
+            --primary: #D35400;
+            --secondary: #F39C12;
+            --background: #FDF2E3;
+            --card-bg: #FFF8F0;
+            --text: #5D4037;
+            --text-light: #8D6E63;
+            --border: #E8D5B5;
+        }
+        [data-theme="midnight"] {
+            --primary: #00B4D8;
+            --secondary: #7B2EDA;
+            --background: #0A1929;
+            --card-bg: #1E2A3A;
+            --text: #E0E0E0;
+            --text-light: #A0AAB5;
+            --border: #2A3A4A;
+        }
+        [data-theme="blossom"] {
+            --primary: #E8A2B0;
+            --secondary: #F5C6D0;
+            --background: #FFF5F7;
+            --card-bg: #FFFFFF;
+            --text: #5E4B56;
+            --text-light: #9A8B92;
+            --border: #F0DDE3;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: var(--background);
+            color: var(--text);
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .menu {
+            margin-bottom: 20px;
+        }
+        .menu a {
+            margin-right: 15px;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .menu a:hover { text-decoration: underline; }
+        .tabs {
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        .tab {
+            display: inline-block;
+            padding: 10px 20px;
+            cursor: pointer;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-bottom: none;
+            text-decoration: none;
+            color: var(--text);
+            border-radius: 5px 5px 0 0;
+        }
+        .tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        .tab:hover:not(.active) {
+            background: var(--secondary);
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .section {
+            background: var(--card-bg);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid var(--border);
+        }
+        .section h3 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+        .question {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .question-form {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: var(--background);
+            border-radius: 5px;
+            border: 1px solid var(--border);
+        }
+        .question-form select, .question-form input {
+            padding: 5px;
+            margin: 0 5px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            background: var(--card-bg);
+            color: var(--text);
+        }
+        .btn {
+            background: var(--primary);
+            color: white;
+            padding: 6px 15px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background: var(--secondary);
+        }
+        .data-box {
+            margin-top: 15px;
+            padding: 10px;
+            background: var(--background);
+            border-radius: 5px;
+            border: 1px solid var(--border);
+        }
+        hr {
+            border-color: var(--border);
+            margin: 15px 0;
+        }
+        .filter-section {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+        .filter-row {
+            margin-bottom: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+        .filter-label {
+            display: inline-block;
+            width: 140px;
+            font-weight: bold;
+        }
+        .filter-row select, .filter-row input {
+            padding: 5px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            background: var(--card-bg);
+            color: var(--text);
+        }
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .stat-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        .total-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        .chart-card {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid var(--border);
+        }
+        .chart-card h4 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+        .toggle-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+        .toggle-btn:hover {
+            background: var(--secondary);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background: var(--card-bg);
+        }
+        th, td {
+            border: 1px solid var(--border);
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background: var(--primary);
+            color: white;
+        }
+        .clear-link {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .clear-link:hover {
+            text-decoration: underline;
+        }
+        .chart-grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .stats-intro {
+            color: var(--text-light);
+        }
+
+        @media (max-width: 768px) {
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+            .chart-grid-3 {
+                grid-template-columns: 1fr;
+            }
+            .tabs {
+                flex-direction: column;
+            }
+            .tab {
+                border-bottom: 1px solid var(--border);
+            }
+            .filter-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .filter-label {
+                width: auto;
+            }
+        }
+    </style>
+    <script>
+    (function() {
+        // 从 localStorage 读取已保存的主题
+        const theme = localStorage.getItem('selectedTheme') || 'ocean';
+
+        // 如果是自定义主题，直接覆盖 CSS 变量
+        if (theme === 'custom') {
+            const custom = localStorage.getItem('customTheme');
+            if (custom) {
+                try {
+                    const t = JSON.parse(custom);
+                    document.documentElement.style.setProperty('--primary', t.primary);
+                    document.documentElement.style.setProperty('--secondary', t.secondary);
+                    document.documentElement.style.setProperty('--background', t.background);
+                    document.documentElement.style.setProperty('--card-bg', t.cardBg);
+                    document.documentElement.style.setProperty('--text', t.text);
+                    // 移除 data-theme 属性，避免覆盖自定义变量
+                    document.documentElement.removeAttribute('data-theme');
+                    return;
+                } catch(e) {
+                    console.error('Failed to load custom theme', e);
+                }
+            }
+        }
+
+        // 否则，设置 data-theme 属性以匹配保存的主题
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+</script>
+</head>
+<body>
+
+<div class="container">
+    <!-- 导航菜单 -->
+    <div class="menu">
+        <a href="/home/" data-i18n="home">Home</a>
+        <a href="/profile/" data-i18n="my_profile">My Profile</a>
+        <a href="/settings/" data-i18n="settings">Settings</a>
+        <a href="/02_Web版本/classes" data-i18n="classes">Classes</a>
+        <a href="/02_Web版本/forum" data-i18n="forum">Forum</a>
+        <a href="/02_Web版本/jobs" data-i18n="job_search">Job Search</a>
+        <a href="/02_Web版本/stats" data-i18n="statistics">Statistics</a>
+        {% if user_role == 'admin' %}
+        <a href="/admin-panel/users/" data-i18n="admin">Admin</a>
+        {% endif %}
+        <a href="/logout/" data-i18n="logout">Logout</a>
+        <span style="float:right;" data-i18n="welcome_prefix">Welcome, {{ user_name }}</span>
+    </div>
+
+    <h1 data-i18n="statistics_analysis">Statistics & Analysis</h1>
+    <p class="stats-intro" data-i18n="visual_charts">Alumni data visualization dashboard</p>
+
+    <!-- 标签页导航 -->
+    <div class="tabs">
+        <a href="#" class="tab active" onclick="showTab('preset')" data-i18n="quick_questions">Quick Questions</a>
+        <a href="#" class="tab" onclick="showTab('custom')" data-i18n="custom_analysis">Custom Analysis</a>
+        <a href="#" class="tab" onclick="showTab('charts')" data-i18n="visual_charts">Data Charts</a>
+    </div>
+
+    <!-- 预设问题标签页 -->
+    <div id="presetTab" class="tab-content active">
+        <div class="section">
+            <h3 data-i18n="quick_questions">Quick Questions</h3>
+
+            <!-- Q1: 性别比例 -->
+            <div class="question" data-i18n="q1">1. What is the male-to-female ratio of [Degree] graduates in [Industry]?</div>
+            <div class="question-form">
+                <label data-i18n="degree">Degree:</label>
+                <select id="q1_degree">
+                    <option value="All" data-i18n="all">All</option>
+                    <option value="Bachelor" data-i18n="bachelor">Bachelor</option>
+                    <option value="Master" data-i18n="master">Master</option>
+                    <option value="PhD" data-i18n="phd">PhD</option>
+                </select>
+                <label data-i18n="industry">Industry:</label>
+                <select id="q1_industry">
+                    <option value="All" data-i18n="all_industries">All</option>
+                    <option value="Technology" data-i18n="technology">Technology</option>
+                    <option value="Finance" data-i18n="finance">Finance</option>
+                    <option value="Education" data-i18n="education">Education</option>
+                    <option value="Healthcare" data-i18n="healthcare">Healthcare</option>
+                    <option value="Manufacturing" data-i18n="manufacturing">Manufacturing</option>
+                    <option value="Other" data-i18n="other">Other</option>
+                </select>
+                <button class="btn" onclick="askPreset('gender_ratio')" data-i18n="ask">Ask</button>
+                <div id="q1_result" class="data-box" style="display:none;"></div>
+            </div>
+            <hr>
+
+            <!-- Q2: 海外工作比例 -->
+            <div class="question" data-i18n="q2">2. What percentage of [Degree] graduates work abroad?</div>
+            <div class="question-form">
+                <label data-i18n="degree">Degree:</label>
+                <select id="q2_degree">
+                    <option value="All" data-i18n="all">All</option>
+                    <option value="Bachelor" data-i18n="bachelor">Bachelor</option>
+                    <option value="Master" data-i18n="master">Master</option>
+                    <option value="PhD" data-i18n="phd">PhD</option>
+                </select>
+                <button class="btn" onclick="askPreset('abroad_percentage')" data-i18n="ask">Ask</button>
+                <div id="q2_result" class="data-box" style="display:none;"></div>
+            </div>
+            <hr>
+
+            <!-- Q3: 职业转型 -->
+            <div class="question" data-i18n="q3">3. What is the most common career switch for [Major] graduates?</div>
+            <div class="question-form">
+                <label data-i18n="major">Major:</label>
+                <input list="majorList" id="q3_major" placeholder="Type or select major..." data-i18n="type_or_select_major">
+                <datalist id="majorList">
+                    {% for major in majors %}
+                    <option value="{{ major }}">
+                    {% endfor %}
+                </datalist>
+                <button class="btn" onclick="askPreset('career_switch')" data-i18n="ask">Ask</button>
+                <div id="q3_result" class="data-box" style="display:none;"></div>
+            </div>
+            <hr>
+
+            <!-- Q4: 近年毕业生行业流入 -->
+            <div class="question" data-i18n="q4">4. Are more recent [Degree] graduates going into [Industry]?</div>
+            <div class="question-form">
+                <label data-i18n="degree">Degree:</label>
+                <select id="q4_degree">
+                    <option value="All" data-i18n="all">All</option>
+                    <option value="Bachelor" data-i18n="bachelor">Bachelor</option>
+                    <option value="Master" data-i18n="master">Master</option>
+                    <option value="PhD" data-i18n="phd">PhD</option>
+                </select>
+                <label data-i18n="industry">Industry:</label>
+                <select id="q4_industry">
+                    <option value="All" data-i18n="all_industries">All</option>
+                    <option value="Technology" data-i18n="technology">Technology</option>
+                    <option value="Finance" data-i18n="finance">Finance</option>
+                    <option value="Education" data-i18n="education">Education</option>
+                    <option value="Healthcare" data-i18n="healthcare">Healthcare</option>
+                    <option value="Manufacturing" data-i18n="manufacturing">Manufacturing</option>
+                    <option value="Other" data-i18n="other">Other</option>
+                </select>
+                <button class="btn" onclick="askPreset('recent_graduates')" data-i18n="ask">Ask</button>
+                <div id="q4_result" class="data-box" style="display:none;"></div>
+            </div>
+            <hr>
+
+            <!-- Q5: 薪资对比 -->
+            <div class="question" data-i18n="q5">5. Do [Degree1] graduates earn more than [Degree2] graduates in [Industry]?</div>
+            <div class="question-form">
+                <label data-i18n="degree1">Degree 1:</label>
+                <select id="q5_degree1">
+                    <option value="Bachelor" data-i18n="bachelor">Bachelor</option>
+                    <option value="Master" data-i18n="master">Master</option>
+                    <option value="PhD" data-i18n="phd">PhD</option>
+                </select>
+                <label data-i18n="degree2">Degree 2:</label>
+                <select id="q5_degree2">
+                    <option value="Bachelor" data-i18n="bachelor">Bachelor</option>
+                    <option value="Master" data-i18n="master">Master</option>
+                    <option value="PhD" data-i18n="phd">PhD</option>
+                </select>
+                <label data-i18n="industry">Industry:</label>
+                <select id="q5_industry">
+                    <option value="All" data-i18n="all_industries">All</option>
+                    <option value="Technology" data-i18n="technology">Technology</option>
+                    <option value="Finance" data-i18n="finance">Finance</option>
+                    <option value="Education" data-i18n="education">Education</option>
+                    <option value="Healthcare" data-i18n="healthcare">Healthcare</option>
+                    <option value="Manufacturing" data-i18n="manufacturing">Manufacturing</option>
+                    <option value="Other" data-i18n="other">Other</option>
+                </select>
+                <button class="btn" onclick="askPreset('salary_comparison')" data-i18n="ask">Ask</button>
+                <div id="q5_result" class="data-box" style="display:none;"></div>
+            </div>
+            <hr>
+
+            <!-- Q6: 毕业生所在地分布 -->
+            <div class="question" data-i18n="q6">6. Where are [Degree] graduates located?</div>
+            <div class="question-form">
+                <label data-i18n="degree">Degree:</label>
+                <select id="q6_degree">
+                    <option value="All" data-i18n="all">All</option>
+                    <option value="Bachelor" data-i18n="bachelor">Bachelor</option>
+                    <option value="Master" data-i18n="master">Master</option>
+                    <option value="PhD" data-i18n="phd">PhD</option>
+                </select>
+                <button class="btn" onclick="askPreset('location_by_degree')" data-i18n="ask">Ask</button>
+                <div id="q6_result" class="data-box" style="display:none;"></div>
+            </div>
+            <hr>
+
+            <!-- Q7: 专业平均薪资 -->
+            <div class="question" data-i18n="q7">7. What is the average salary of [Major] graduates?</div>
+            <div class="question-form">
+                <label data-i18n="major">Major:</label>
+                <input list="majorList" id="q7_major" placeholder="Type or select major..." data-i18n="type_or_select_major">
+                <datalist id="majorList2">
+                    {% for major in majors %}
+                    <option value="{{ major }}">
+                    {% endfor %}
+                </datalist>
+                <button class="btn" onclick="askPreset('salary_by_major')" data-i18n="ask">Ask</button>
+                <div id="q7_result" class="data-box" style="display:none;"></div>
+            </div>
+            <hr>
+
+            <!-- Q8: 最集中行业 -->
+            <div class="question" data-i18n="q8">8. Which industry has the highest concentration of [Degree] graduates?</div>
+            <div class="question-form">
+                <label data-i18n="degree">Degree:</label>
+                <select id="q8_degree">
+                    <option value="All" data-i18n="all">All</option>
+                    <option value="Bachelor" data-i18n="bachelor">Bachelor</option>
+                    <option value="Master" data-i18n="master">Master</option>
+                    <option value="PhD" data-i18n="phd">PhD</option>
+                </select>
+                <button class="btn" onclick="askPreset('top_industry_by_degree')" data-i18n="ask">Ask</button>
+                <div id="q8_result" class="data-box" style="display:none;"></div>
+            </div>
+            <hr>
+
+            <!-- Q9: 辅修学位/证书统计 -->
+            <div class="question" data-i18n="q9">9. How many [Degree] graduates have a minor or certificate?</div>
+            <div class="question-form">
+                <label data-i18n="degree">Degree:</label>
+                <select id="q9_degree">
+                    <option value="All" data-i18n="all">All</option>
+                    <option value="Bachelor" data-i18n="bachelor">Bachelor</option>
+                    <option value="Master" data-i18n="master">Master</option>
+                    <option value="PhD" data-i18n="phd">PhD</option>
+                </select>
+                <button class="btn" onclick="askPreset('minor_certificate_count')" data-i18n="ask">Ask</button>
+                <div id="q9_result" class="data-box" style="display:none;"></div>
+            </div>
+            <hr>
+
+            <!-- Q10: 最常见职位 -->
+            <div class="question" data-i18n="q10">10. What is the most common job title for [Major] graduates?</div>
+            <div class="question-form">
+                <label data-i18n="major">Major:</label>
+                <input list="majorList" id="q10_major" placeholder="Type or select major..." data-i18n="type_or_select_major">
+                <datalist id="majorList10">
+                    {% for major in majors %}
+                    <option value="{{ major }}">
+                    {% endfor %}
+                </datalist>
+                <button class="btn" onclick="askPreset('top_job_title_by_major')" data-i18n="ask">Ask</button>
+                <div id="q10_result" class="data-box" style="display:none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 自定义分析标签页 -->
+    <div id="customTab" class="tab-content">
+        <div class="filter-section">
+            <h3 data-i18n="custom_analysis">Custom Analysis</h3>
+            <form onsubmit="runCustomAnalysis(); return false;">
+                <div class="filter-row">
+                    <label class="filter-label" data-i18n="industry">Industry:</label>
+                    <select id="custom_industry">
+                        <option value="" data-i18n="all_industries">All Industries</option>
+                        {% for industry in industries %}
+                        <option value="{{ industry }}">{{ industry }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-row">
+                    <label class="filter-label" data-i18n="location">Location:</label>
+                    <select id="custom_location">
+                        <option value="" data-i18n="all_locations">All Locations</option>
+                        {% for location in locations %}
+                        <option value="{{ location }}">{{ location }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-row">
+                    <label class="filter-label" data-i18n="gender">Gender:</label>
+                    <select id="custom_gender">
+                        <option value="" data-i18n="all">All</option>
+                        <option value="M" data-i18n="male">Male</option>
+                        <option value="F" data-i18n="female">Female</option>
+                    </select>
+                </div>
+                <div class="filter-row">
+                    <label class="filter-label" data-i18n="grad_year_range">Graduation Year Range:</label>
+                    <select id="custom_start_year">
+                        <option value="" data-i18n="start_year">Start Year</option>
+                        {% for year in years %}
+                        <option value="{{ year }}">{{ year }}</option>
+                        {% endfor %}
+                    </select>
+                    <select id="custom_end_year">
+                        <option value="" data-i18n="end_year">End Year</option>
+                        {% for year in years %}
+                        <option value="{{ year }}">{{ year }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-row">
+                    <label class="filter-label" data-i18n="has_minor">Has Minor:</label>
+                    <select id="custom_minor">
+                        <option value="" data-i18n="all">All</option>
+                        <option value="yes" data-i18n="yes">Yes</option>
+                        <option value="no" data-i18n="no">No</option>
+                    </select>
+                </div>
+                <div class="filter-row">
+                    <label class="filter-label" data-i18n="has_certificate">Has Certificate:</label>
+                    <select id="custom_certificate">
+                        <option value="" data-i18n="all">All</option>
+                        <option value="yes" data-i18n="yes">Yes</option>
+                        <option value="no" data-i18n="no">No</option>
+                    </select>
+                </div>
+                <div class="filter-row">
+                    <label class="filter-label" data-i18n="employment_status">Employment Status:</label>
+                    <select id="custom_employment">
+                        <option value="" data-i18n="all">All</option>
+                        <option value="employed" data-i18n="employed">Employed</option>
+                        <option value="unemployed" data-i18n="unemployed">Unemployed</option>
+                    </select>
+                </div>
+                <div class="filter-row">
+                    <button type="submit" class="btn" data-i18n="run_analysis">Run Analysis</button>
+                    <a href="/02_Web版本/stats" class="clear-link" data-i18n="reset_filters">Reset Filters</a>
+                </div>
+            </form>
+        </div>
+        <div id="custom_results"></div>
+    </div>
+
+    <!-- 数据图表标签页 -->
+    <div id="chartsTab" class="tab-content">
+        <div class="stat-card">
+            <div class="stat-title" data-i18n="visual_charts">Data Charts</div>
+            <button class="toggle-btn" onclick="toggleSection('chartsSection')" data-i18n="hide_charts">Hide Charts</button>
+            <div id="chartsSection">
+                <div class="chart-grid">
+                    <div class="chart-card">
+                        <h4 data-i18n="gender">Gender Ratio</h4>
+                        <canvas id="genderChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h4 data-i18n="industry_distribution">Industry Distribution</h4>
+                        <canvas id="industryChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h4 data-i18n="location_distribution">Location Distribution</h4>
+                        <canvas id="locationChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h4 data-i18n="degree">Degree Distribution</h4>
+                        <canvas id="degreeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 颜色调色板
+    const colors = ['#006994', '#48CAE4', '#FF6B6B', '#F39C12', '#2E8B57', '#9B59B6', '#E67E22', '#1ABC9C'];
+
+    // ==================== 标签页切换 ====================
+    function showTab(tab) {
+        document.querySelectorAll('.tab-content').forEach(function(el) {
+            el.classList.remove('active');
+        });
+        document.querySelectorAll('.tab').forEach(function(el) {
+            el.classList.remove('active');
+        });
+        document.getElementById(tab + 'Tab').classList.add('active');
+        event.target.classList.add('active');
+    }
+
+    // ==================== 预设问题 API 调用 ====================
+    function askPreset(q) {
+        const params = new URLSearchParams();
+        params.append('q', q);
+
+        let resultDiv;
+
+        if (q === 'gender_ratio') {
+            params.append('degree_type', document.getElementById('q1_degree').value);
+            params.append('industry', document.getElementById('q1_industry').value);
+            resultDiv = document.getElementById('q1_result');
+        } else if (q === 'abroad_percentage') {
+            params.append('degree_type', document.getElementById('q2_degree').value);
+            resultDiv = document.getElementById('q2_result');
+        } else if (q === 'career_switch') {
+            params.append('major', document.getElementById('q3_major').value || 'All');
+            resultDiv = document.getElementById('q3_result');
+        } else if (q === 'recent_graduates') {
+            params.append('degree_type', document.getElementById('q4_degree').value);
+            params.append('industry', document.getElementById('q4_industry').value);
+            resultDiv = document.getElementById('q4_result');
+        } else if (q === 'salary_comparison') {
+            params.append('degree1', document.getElementById('q5_degree1').value);
+            params.append('degree2', document.getElementById('q5_degree2').value);
+            params.append('industry', document.getElementById('q5_industry').value);
+            resultDiv = document.getElementById('q5_result');
+        } else if (q === 'location_by_degree') {
+            params.append('degree_type', document.getElementById('q6_degree').value);
+            resultDiv = document.getElementById('q6_result');
+        } else if (q === 'salary_by_major') {
+            params.append('major', document.getElementById('q7_major').value || 'All');
+            resultDiv = document.getElementById('q7_result');
+        } else if (q === 'top_industry_by_degree') {
+            params.append('degree_type', document.getElementById('q8_degree').value);
+            resultDiv = document.getElementById('q8_result');
+        } else if (q === 'minor_certificate_count') {
+            params.append('degree_type', document.getElementById('q9_degree').value);
+            resultDiv = document.getElementById('q9_result');
+        } else if (q === 'top_job_title_by_major') {
+            params.append('major', document.getElementById('q10_major').value || 'All');
+            resultDiv = document.getElementById('q10_result');
+        }
+
+        fetch('/stats/api/preset/?' + params.toString())
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+                if (resultDiv) {
+                    resultDiv.style.display = 'block';
+                    resultDiv.textContent = data.result || 'No data available.';
+                }
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+                if (resultDiv) {
+                    resultDiv.style.display = 'block';
+                    resultDiv.textContent = 'Error retrieving data.';
+                }
+            });
+    }
+
+    // ==================== 自定义分析 ====================
+    // 存储自定义分析图表的实例，用于重新创建时销毁旧实例
+    let customChartInstances = {};
+
+    function destroyCustomCharts() {
+        for (const key in customChartInstances) {
+            if (customChartInstances[key]) {
+                customChartInstances[key].destroy();
+            }
+        }
+        customChartInstances = {};
+    }
+
+    function runCustomAnalysis() {
+        const params = new URLSearchParams();
+        const fields = ['industry', 'location', 'gender', 'start_year', 'end_year', 'minor', 'certificate', 'employment'];
+        const idMap = {
+            industry: 'custom_industry',
+            location: 'custom_location',
+            gender: 'custom_gender',
+            start_year: 'custom_start_year',
+            end_year: 'custom_end_year',
+            minor: 'custom_minor',
+            certificate: 'custom_certificate',
+            employment: 'custom_employment'
+        };
+        fields.forEach(function(f) {
+            const val = document.getElementById(idMap[f]).value;
+            if (val) params.append(f, val);
+        });
+
+        // 显示加载状态
+        const el = document.getElementById('custom_results');
+        el.innerHTML = '<p>Loading...</p>';
+
+        fetch('/stats/api/custom/?' + params.toString())
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+                if (!data.total) {
+                    el.innerHTML = '<p>No data matching the selected filters.</p>';
+                    return;
+                }
+
+                // 销毁旧图表
+                destroyCustomCharts();
+
+                // 构建 HTML（包含图表容器）
+                let html = `
+                    <div class="stat-card">
+                        <div class="stat-title" data-i18n="analysis_results">Analysis Results</div>
+                        <div class="total-number">${data.total}</div>
+                        <p>Total ${data.total} <span data-i18n="alumni">alumni</span></p>
+                    </div>
+                `;
+
+                // 图表区域（如果有数据）
+                let hasIndustry = data.industry_count && Object.keys(data.industry_count).length > 0;
+                let hasLocation = data.location_count && Object.keys(data.location_count).length > 0;
+                let hasYear = data.year_count && Object.keys(data.year_count).length > 0;
+
+                if (hasIndustry || hasLocation || hasYear) {
+                    html += `
+                        <div class="stat-card">
+                            <div class="stat-title" data-i18n="visual_charts">Visual Charts</div>
+                            <div class="chart-grid-3">
+                    `;
+
+                    if (hasIndustry) {
+                        html += `
+                            <div class="chart-card">
+                                <h4 data-i18n="industry_distribution">Industry Distribution</h4>
+                                <canvas id="customIndustryChart"></canvas>
+                            </div>
+                        `;
+                    }
+
+                    if (hasLocation) {
+                        html += `
+                            <div class="chart-card">
+                                <h4 data-i18n="location_distribution">Location Distribution</h4>
+                                <canvas id="customLocationChart"></canvas>
+                            </div>
+                        `;
+                    }
+
+                    if (hasYear) {
+                        html += `
+                            <div class="chart-card">
+                                <h4 data-i18n="grad_year_trend">Graduation Year Trend</h4>
+                                <canvas id="customYearChart"></canvas>
+                            </div>
+                        `;
+                    }
+
+                    html += `
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // 数据表格
+                html += `<div class="stat-card"><div class="stat-title" data-i18n="data_tables">Data Tables</div>`;
+
+                if (hasIndustry) {
+                    html += `
+                        <h4 style="margin-top: 15px;" data-i18n="industry_distribution">Industry Distribution</h4>
+                        <ul>
+                    `;
+                    for (const k in data.industry_count) {
+                        html += `<li>${k}: ${data.industry_count[k]} <span data-i18n="people">people</span> (${(data.industry_count[k]/data.total*100).toFixed(1)}%)</li>`;
+                    }
+                    html += `</ul>`;
+                }
+
+                if (hasLocation) {
+                    html += `
+                        <h4 style="margin-top: 15px;" data-i18n="location_distribution">Location Distribution</h4>
+                        <ul>
+                    `;
+                    for (const loc in data.location_count) {
+                        html += `<li>${loc}: ${data.location_count[loc]} <span data-i18n="people">people</span> (${(data.location_count[loc]/data.total*100).toFixed(1)}%)</li>`;
+                    }
+                    html += `</ul>`;
+                }
+
+                if (hasYear) {
+                    html += `
+                        <h4 style="margin-top: 15px;" data-i18n="grad_year_distribution">Graduation Year Distribution</h4>
+                        <ul>
+                    `;
+                    const sortedYears = Object.keys(data.year_count).sort((a, b) => a - b);
+                    for (const year of sortedYears) {
+                        html += `<li>${year}: ${data.year_count[year]} <span data-i18n="people">people</span></li>`;
+                    }
+                    html += `</ul>`;
+                }
+
+                html += `
+                    <h4 style="margin-top: 15px;" data-i18n="additional_stats">Additional Statistics</h4>
+                    <p><span data-i18n="has_minor">Has Minor</span>: ${data.minor_count} <span data-i18n="people">people</span> (${(data.minor_count/data.total*100).toFixed(1)}%)</p>
+                    <p><span data-i18n="has_certificate">Has Certificate</span>: ${data.cert_count} <span data-i18n="people">people</span> (${(data.cert_count/data.total*100).toFixed(1)}%)</p>
+                `;
+
+                html += `</div>`;
+
+                el.innerHTML = html;
+
+                // 渲染图表
+                setTimeout(function() {
+                    const primaryColor = '#006994';
+                    const secondaryColor = '#48CAE4';
+
+                    if (hasIndustry) {
+                        const labels = Object.keys(data.industry_count);
+                        const values = Object.values(data.industry_count);
+                        const ctx = document.getElementById('customIndustryChart');
+                        if (ctx) {
+                            customChartInstances.industry = new Chart(ctx, {
+                                type: 'pie',
+                                data: {
+                                    labels: labels,
+                                    datasets: [{ data: values, backgroundColor: colors.slice(0, labels.length) }]
+                                },
+                                options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+                            });
+                        }
+                    }
+
+                    if (hasLocation) {
+                        const labels = Object.keys(data.location_count);
+                        const values = Object.values(data.location_count);
+                        const ctx = document.getElementById('customLocationChart');
+                        if (ctx) {
+                            customChartInstances.location = new Chart(ctx, {
+                                type: 'bar',
+                                data: {
+                                    labels: labels,
+                                    datasets: [{ label: 'People', data: values, backgroundColor: primaryColor }]
+                                },
+                                options: { responsive: true, plugins: { legend: { display: false } } }
+                            });
+                        }
+                    }
+
+                    if (hasYear) {
+                        const sortedYears = Object.keys(data.year_count).sort((a, b) => a - b);
+                        const values = sortedYears.map(function(y) { return data.year_count[y]; });
+                        const ctx = document.getElementById('customYearChart');
+                        if (ctx) {
+                            customChartInstances.year = new Chart(ctx, {
+                                type: 'line',
+                                data: {
+                                    labels: sortedYears,
+                                    datasets: [{
+                                        label: 'Number of Graduates',
+                                        data: values,
+                                        borderColor: primaryColor,
+                                        backgroundColor: 'rgba(0, 105, 148, 0.1)',
+                                        fill: true,
+                                        tension: 0.3
+                                    }]
+                                },
+                                options: { responsive: true, plugins: { legend: { position: 'top' } } }
+                            });
+                        }
+                    }
+                }, 50);
+
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+                document.getElementById('custom_results').innerHTML = '<p>Error retrieving data.</p>';
+            });
+    }
+
+    // ==================== 图表渲染 ====================
+    function fetchData(type) {
+        return fetch('/stats/api/?type=' + type)
+            .then(function(response) { return response.json(); });
+    }
+
+    function renderGenderChart() {
+        fetchData('gender_ratio').then(function(data) {
+            if (!data || !data.length) return;
+            const labels = data.map(function(d) { return d.gender === 'M' ? 'Male' : 'Female'; });
+            const values = data.map(function(d) { return d.count; });
+            new Chart(document.getElementById('genderChart'), {
+                type: 'pie',
+                data: { labels: labels, datasets: [{ data: values, backgroundColor: ['#006994', '#FF6B6B'] }] },
+                options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+            });
+        });
+    }
+
+    function renderIndustryChart() {
+        fetchData('industry_distribution').then(function(data) {
+            if (!data || !data.length) return;
+            const labels = data.map(function(d) { return d.industry; });
+            const values = data.map(function(d) { return d.count; });
+            new Chart(document.getElementById('industryChart'), {
+                type: 'bar',
+                data: { labels: labels, datasets: [{ label: 'People', data: values, backgroundColor: '#006994' }] },
+                options: { responsive: true, plugins: { legend: { display: false } } }
+            });
+        });
+    }
+
+    function renderLocationChart() {
+        fetchData('location_distribution').then(function(data) {
+            if (!data || !data.length) return;
+            const labels = data.map(function(d) { return d.location; });
+            const values = data.map(function(d) { return d.count; });
+            new Chart(document.getElementById('locationChart'), {
+                type: 'bar',
+                data: { labels: labels, datasets: [{ label: 'People', data: values, backgroundColor: '#48CAE4' }] },
+                options: { responsive: true, indexAxis: 'y', plugins: { legend: { display: false } } }
+            });
+        });
+    }
+
+    function renderDegreeChart() {
+        fetchData('degree_distribution').then(function(data) {
+            if (!data || !data.length) return;
+            const labels = data.map(function(d) { return d.degree; });
+            const values = data.map(function(d) { return d.count; });
+            new Chart(document.getElementById('degreeChart'), {
+                type: 'doughnut',
+                data: { labels: labels, datasets: [{ data: values, backgroundColor: colors.slice(0, labels.length) }] },
+                options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+            });
+        });
+    }
+
+    function toggleSection(id) {
+        const el = document.getElementById(id);
+        const btn = event.target;
+        if (el.style.display === 'none') {
+            el.style.display = 'block';
+            btn.textContent = 'Hide Charts';
+        } else {
+            el.style.display = 'none';
+            btn.textContent = 'Show Charts';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        renderGenderChart();
+        renderIndustryChart();
+        renderLocationChart();
+        renderDegreeChart();
+    });
+</script>
+
+</body>
+</html>

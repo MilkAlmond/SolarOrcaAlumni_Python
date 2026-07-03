@@ -1,0 +1,7 @@
+{
+  "data_file": "data/alumni_data.csv",
+  "output_dir": "output",
+  "chart_dpi": 150,
+  "max_preview_rows": 10,
+  "log_dir": "logs"
+}

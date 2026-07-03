@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="report_content">Report Content - SolarOrca</title>
+    <style>
+        :root {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="ocean"] {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="fall"] {
+            --primary: #D35400;
+            --secondary: #F39C12;
+            --background: #FDF2E3;
+            --card-bg: #FFF8F0;
+            --text: #5D4037;
+            --text-light: #8D6E63;
+            --border: #E8D5B5;
+        }
+        [data-theme="midnight"] {
+            --primary: #00B4D8;
+            --secondary: #7B2EDA;
+            --background: #0A1929;
+            --card-bg: #1E2A3A;
+            --text: #E0E0E0;
+            --text-light: #A0AAB5;
+            --border: #2A3A4A;
+        }
+        [data-theme="blossom"] {
+            --primary: #E8A2B0;
+            --secondary: #F5C6D0;
+            --background: #FFF5F7;
+            --card-bg: #FFFFFF;
+            --text: #5E4B56;
+            --text-light: #9A8B92;
+            --border: #F0DDE3;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: var(--background);
+            color: var(--text);
+        }
+        .container {
+            max-width: 550px;
+            margin: 0 auto;
+        }
+        .menu {
+            margin-bottom: 20px;
+        }
+        .menu a {
+            margin-right: 15px;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .menu a:hover {
+            text-decoration: underline;
+        }
+        .info-box {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+        .info-box .label {
+            font-weight: bold;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--text);
+        }
+        select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            background: var(--card-bg);
+            color: var(--text);
+        }
+        select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        button {
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: var(--secondary);
+        }
+        .cancel-link {
+            margin-left: 15px;
+            color: var(--text-light);
+            text-decoration: none;
+        }
+        .cancel-link:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        .form-actions {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .instruction-text {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 5px;
+        }
+        @media (max-width: 600px) {
+            .form-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .cancel-link {
+                margin-left: 0;
+                text-align: center;
+            }
+        }
+    </style>
+    <script>
+    (function() {
+        // 从 localStorage 读取已保存的主题
+        const theme = localStorage.getItem('selectedTheme') || 'ocean';
+
+        // 如果是自定义主题，直接覆盖 CSS 变量
+        if (theme === 'custom') {
+            const custom = localStorage.getItem('customTheme');
+            if (custom) {
+                try {
+                    const t = JSON.parse(custom);
+                    document.documentElement.style.setProperty('--primary', t.primary);
+                    document.documentElement.style.setProperty('--secondary', t.secondary);
+                    document.documentElement.style.setProperty('--background', t.background);
+                    document.documentElement.style.setProperty('--card-bg', t.cardBg);
+                    document.documentElement.style.setProperty('--text', t.text);
+                    // 移除 data-theme 属性，避免覆盖自定义变量
+                    document.documentElement.removeAttribute('data-theme');
+                    return;
+                } catch(e) {
+                    console.error('Failed to load custom theme', e);
+                }
+            }
+        }
+
+        // 否则，设置 data-theme 属性以匹配保存的主题
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+</script>
+</head>
+<body>
+
+<div class="container">
+    <!-- 导航菜单 -->
+    <div class="menu">
+        <a href="/home/" data-i18n="home">Home</a>
+        <a href="/profile/" data-i18n="my_profile">My Profile</a>
+        <a href="/settings/" data-i18n="settings">Settings</a>
+        <a href="/02_Web版本/classes" data-i18n="classes">Classes</a>
+        <a href="/02_Web版本/forum" data-i18n="forum">Forum</a>
+        <a href="/02_Web版本/jobs" data-i18n="job_search">Job Search</a>
+        {% if user_role == 'admin' %}
+        <a href="/admin-panel/users/" data-i18n="admin">Admin</a>
+        {% endif %}
+        <a href="/logout/" data-i18n="logout">Logout</a>
+        <span style="float:right;" data-i18n="welcome_prefix">Welcome, {{ user_name }}</span>
+    </div>
+
+    <h1 data-i18n="report_content">Report Content</h1>
+
+    <!-- 显示后端返回的错误信息 -->
+    {% if messages %}
+        {% for msg in messages %}
+            <div class="message error">{{ msg }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- 被举报内容 -->
+    <div class="info-box">
+        <p><span class="label" data-i18n="content_to_report">Content to report:</span> {{ target_title }}</p>
+        <p class="instruction-text" data-i18n="report_instruction">
+            Your report will be reviewed by an admin. Please provide a reason and optional details.
+        </p>
+    </div>
+
+    <!-- 举报表单 -->
+    <form method="post">
+        {% csrf_token %}
+
+        <!-- 举报原因 -->
+        <div class="form-group">
+            <label for="reason" data-i18n="reason_for_reporting">Reason for reporting:</label>
+            <select id="reason" name="reason" required>
+                <option value="" data-i18n="please_select">-- Please select --</option>
+                <option value="spam" data-i18n="spam">Spam</option>
+                <option value="inappropriate" data-i18n="inappropriate">Inappropriate content</option>
+                <option value="harassment" data-i18n="harassment">Harassment or bullying</option>
+                <option value="hate_speech" data-i18n="hate_speech">Hate speech</option>
+                <option value="impersonation" data-i18n="impersonation">Impersonation</option>
+                <option value="something_else" data-i18n="something_else">Something else</option>
+            </select>
+        </div>
+
+        <!-- 详情（可选） -->
+        <div class="form-group">
+            <label for="details" data-i18n="details">Additional details (optional):</label>
+            <textarea id="details" name="details" placeholder="Please provide any additional information that may help us review this report..."></textarea>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" data-i18n="submit_report">Submit Report</button>
+            <a href="/02_Web版本/forum" class="cancel-link" data-i18n="cancel">Cancel</a>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

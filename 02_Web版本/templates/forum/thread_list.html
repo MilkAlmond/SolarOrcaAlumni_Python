@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="forum">Forum - SolarOrca</title>
+    <style>
+        :root {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="ocean"] {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="fall"] {
+            --primary: #D35400;
+            --secondary: #F39C12;
+            --background: #FDF2E3;
+            --card-bg: #FFF8F0;
+            --text: #5D4037;
+            --text-light: #8D6E63;
+            --border: #E8D5B5;
+        }
+        [data-theme="midnight"] {
+            --primary: #00B4D8;
+            --secondary: #7B2EDA;
+            --background: #0A1929;
+            --card-bg: #1E2A3A;
+            --text: #E0E0E0;
+            --text-light: #A0AAB5;
+            --border: #2A3A4A;
+        }
+        [data-theme="blossom"] {
+            --primary: #E8A2B0;
+            --secondary: #F5C6D0;
+            --background: #FFF5F7;
+            --card-bg: #FFFFFF;
+            --text: #5E4B56;
+            --text-light: #9A8B92;
+            --border: #F0DDE3;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: var(--background);
+            color: var(--text);
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .menu {
+            margin-bottom: 20px;
+        }
+        .menu a {
+            margin-right: 15px;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .menu a:hover { text-decoration: underline; }
+        .forum-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .new-thread-btn {
+            background: var(--primary);
+            color: white;
+            padding: 8px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .new-thread-btn:hover {
+            background: var(--secondary);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card-bg);
+        }
+        th, td {
+            border: 1px solid var(--border);
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background: var(--primary);
+            color: white;
+        }
+        .badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 5px;
+            color: white;
+        }
+        .badge-pinned {
+            background: #ff9800;
+        }
+        .badge-locked {
+            background: #999;
+        }
+        .badge-alumni {
+            background: #4caf50;
+        }
+        .title-link {
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            color: var(--primary);
+        }
+        .title-link:hover {
+            text-decoration: underline;
+            color: var(--secondary);
+        }
+        .forum-row-pinned {
+            background-color: #fff3e0;
+        }
+        .no-threads {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--text-light);
+        }
+        .pagination {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .pagination a {
+            margin: 0 5px;
+            padding: 5px 10px;
+            text-decoration: none;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            color: var(--primary);
+        }
+        .pagination a:hover {
+            background: var(--secondary);
+            color: white;
+        }
+        .pagination .page-active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            tr {
+                border: 1px solid var(--border);
+                margin-bottom: 10px;
+            }
+            td {
+                border: none;
+                border-bottom: 1px solid var(--border);
+                position: relative;
+                padding-left: 50%;
+            }
+            td:before {
+                position: absolute;
+                top: 8px;
+                left: 8px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                font-weight: bold;
+                content: attr(data-label);
+            }
+            .forum-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .new-thread-btn {
+                text-align: center;
+            }
+        }
+    </style>
+    <script>
+    (function() {
+        // 从 localStorage 读取已保存的主题
+        const theme = localStorage.getItem('selectedTheme') || 'ocean';
+
+        // 如果是自定义主题，直接覆盖 CSS 变量
+        if (theme === 'custom') {
+            const custom = localStorage.getItem('customTheme');
+            if (custom) {
+                try {
+                    const t = JSON.parse(custom);
+                    document.documentElement.style.setProperty('--primary', t.primary);
+                    document.documentElement.style.setProperty('--secondary', t.secondary);
+                    document.documentElement.style.setProperty('--background', t.background);
+                    document.documentElement.style.setProperty('--card-bg', t.cardBg);
+                    document.documentElement.style.setProperty('--text', t.text);
+                    // 移除 data-theme 属性，避免覆盖自定义变量
+                    document.documentElement.removeAttribute('data-theme');
+                    return;
+                } catch(e) {
+                    console.error('Failed to load custom theme', e);
+                }
+            }
+        }
+
+        // 否则，设置 data-theme 属性以匹配保存的主题
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+</script>
+</head>
+<body>
+
+<div class="container">
+    <!-- 导航菜单 -->
+    <div class="menu">
+        <a href="/home/" data-i18n="home">Home</a>
+        <a href="/profile/" data-i18n="my_profile">My Profile</a>
+        <a href="/settings/" data-i18n="settings">Settings</a>
+        <a href="/02_Web版本/classes" data-i18n="classes">Classes</a>
+        <a href="/02_Web版本/forum" data-i18n="forum">Forum</a>
+        <a href="/02_Web版本/jobs" data-i18n="job_search">Job Search</a>
+        {% if user_role == 'admin' %}
+        <a href="/admin-panel/users/" data-i18n="admin">Admin</a>
+        {% endif %}
+        <a href="/logout/" data-i18n="logout">Logout</a>
+        <span style="float:right;" data-i18n="welcome_prefix">Welcome, {{ user_name }}</span>
+    </div>
+
+    <!-- 论坛头部 -->
+    <div class="forum-header">
+        <h1 data-i18n="discussion_forum">Discussion Forum</h1>
+        <!-- 校友和管理员可以发新帖 -->
+        {% if user_role == 'alumni' or user_role == 'admin' %}
+        <a href="/02_Web版本/forum/new/" class="new-thread-btn" data-i18n="new_thread">+ New Thread</a>
+        {% endif %}
+    </div>
+
+    {% if threads %}
+    <div style="overflow-x: auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th data-i18n="title">Title</th>
+                    <th data-i18n="author">Author</th>
+                    <th data-i18n="replies">Replies</th>
+                    <th data-i18n="views">Views</th>
+                    <th data-i18n="last_active">Last Active</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in threads %}
+                <tr class="{% if t.is_pinned %}forum-row-pinned{% endif %}">
+                    <td data-label="Title">
+                        <a href="/02_Web版本/forum/thread/{{ t.thread_id }}/" class="title-link">
+                            {{ t.title }}
+                        </a>
+                        {% if t.is_pinned %}
+                        <span class="badge badge-pinned" data-i18n="pinned">Pinned</span>
+                        {% endif %}
+                        {% if t.is_locked %}
+                        <span class="badge badge-locked" data-i18n="locked">Locked</span>
+                        {% endif %}
+                        {% if t.is_alumni_only %}
+                        <span class="badge badge-alumni" data-i18n="alumni_only">Alumni Only</span>
+                        {% endif %}
+                    </td>
+                    <td data-label="Author">{{ t.author_name|default:"Unknown" }}</td>
+                    <td data-label="Replies">{{ t.reply_count|default:0 }}</td>
+                    <td data-label="Views">{{ t.view_count|default:0 }}</td>
+                    <td data-label="Last Active">{{ t.created_at|date:"Y-m-d H:i" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 分页 -->
+    {% if total_pages > 1 %}
+    <div class="pagination">
+        {% if current_page > 1 %}
+        <a href="/02_Web版本/forum?page={{ current_page|add:'-1' }}" data-i18n="previous">Previous</a>
+        {% endif %}
+        {% for i in total_pages|make_list %}
+            {% if forloop.counter == current_page %}
+            <a href="/02_Web版本/forum?page={{ forloop.counter }}" class="page-active">{{ forloop.counter }}</a>
+            {% elif forloop.counter <= current_page|add:'2' and forloop.counter >= current_page|add:'-2' %}
+            <a href="/02_Web版本/forum?page={{ forloop.counter }}">{{ forloop.counter }}</a>
+            {% endif %}
+        {% endfor %}
+        {% if current_page < total_pages %}
+        <a href="/02_Web版本/forum?page={{ current_page|add:'1' }}" data-i18n="next">Next</a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% else %}
+    <p class="no-threads" data-i18n="no_threads">No threads yet. Be the first to post!</p>
+    {% endif %}
+</div>
+
+</body>
+</html>

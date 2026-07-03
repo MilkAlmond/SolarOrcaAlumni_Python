@@ -1,0 +1,143 @@
+/* ============================================
+   主题变量
+   ============================================ */
+
+/* 默认主题：海洋之风 */
+:root {
+    --primary: #006994;
+    --secondary: #48CAE4;
+    --accent: #FF6B6B;
+    --background: #F0F8FF;
+    --card-bg: #FFFFFF;
+    --text: #1A3A4A;
+    --text-light: #5A7A8A;
+    --border: #C5D5E6;
+    --success: #2E8B57;
+    --warning: #FFC107;
+    --danger: #E63946;
+}
+
+/* 主题1：海洋之风 - 清新蓝色调 */
+[data-theme="ocean"] {
+    --primary: #006994;
+    --secondary: #48CAE4;
+    --accent: #FF6B6B;
+    --background: #F0F8FF;
+    --card-bg: #FFFFFF;
+    --text: #1A3A4A;
+    --text-light: #5A7A8A;
+    --border: #C5D5E6;
+    --success: #2E8B57;
+    --warning: #FFC107;
+    --danger: #E63946;
+}
+
+/* 主题2：秋日森林 - 温暖橙褐色调 */
+[data-theme="fall"] {
+    --primary: #D35400;
+    --secondary: #F39C12;
+    --accent: #A93226;
+    --background: #FDF2E3;
+    --card-bg: #FFF8F0;
+    --text: #5D4037;
+    --text-light: #8D6E63;
+    --border: #E8D5B5;
+    --success: #7D8A2E;
+    --warning: #E67E22;
+    --danger: #C0392B;
+}
+
+/* 主题3：午夜 - 深色护眼模式 */
+[data-theme="midnight"] {
+    --primary: #00B4D8;
+    --secondary: #7B2EDA;
+    --accent: #FF6B6B;
+    --background: #0A1929;
+    --card-bg: #1E2A3A;
+    --text: #E0E0E0;
+    --text-light: #A0AAB5;
+    --border: #2A3A4A;
+    --success: #00C853;
+    --warning: #FFC107;
+    --danger: #FF5252;
+}
+
+/* 主题4：花开 - 柔和粉色调 */
+[data-theme="blossom"] {
+    --primary: #E8A2B0;
+    --secondary: #F5C6D0;
+    --accent: #B56576;
+    --background: #FFF5F7;
+    --card-bg: #FFFFFF;
+    --text: #5E4B56;
+    --text-light: #9A8B92;
+    --border: #F0DDE3;
+    --success: #88B04B;
+    --warning: #F4A261;
+    --danger: #E76F51;
+}
+
+/* ============================================
+   全局样式
+   ============================================ */
+
+body {
+    background-color: var(--background);
+    color: var(--text);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.container, .stat-card, .chart-card, .section, .filter-section, .info-box, .reply-form {
+    background-color: var(--card-bg);
+    border-color: var(--border);
+}
+
+.menu a, .tab, .pagination a, .pagination span {
+    color: var(--text);
+}
+
+.menu a:hover, .tab:hover, .pagination a:hover {
+    color: var(--primary);
+}
+
+.tab.active, .pagination .current {
+    background-color: var(--primary);
+    color: white;
+}
+
+.button, .btn, button[type="submit"], .new-thread-btn, .filter-row button {
+    background-color: var(--primary);
+    color: white;
+}
+
+.button:hover, .btn:hover, button[type="submit"]:hover {
+    background-color: var(--secondary);
+}
+
+a {
+    color: var(--primary);
+}
+
+a:hover {
+    color: var(--secondary);
+}
+
+table th {
+    background-color: var(--secondary);
+    color: var(--text);
+}
+
+table td {
+    border-color: var(--border);
+}
+
+input, select, textarea {
+    background-color: var(--card-bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+/* 相似度颜色标识 */
+.similarity-high { color: var(--success); }
+.similarity-medium { color: var(--warning); }
+.similarity-low { color: var(--danger); }

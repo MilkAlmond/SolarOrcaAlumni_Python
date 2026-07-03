@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - SolarOrca</title>
+    <style>
+        :root {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="ocean"] {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="fall"] {
+            --primary: #D35400;
+            --secondary: #F39C12;
+            --background: #FDF2E3;
+            --card-bg: #FFF8F0;
+            --text: #5D4037;
+            --text-light: #8D6E63;
+            --border: #E8D5B5;
+        }
+        [data-theme="midnight"] {
+            --primary: #00B4D8;
+            --secondary: #7B2EDA;
+            --background: #0A1929;
+            --card-bg: #1E2A3A;
+            --text: #E0E0E0;
+            --text-light: #A0AAB5;
+            --border: #2A3A4A;
+        }
+        [data-theme="blossom"] {
+            --primary: #E8A2B0;
+            --secondary: #F5C6D0;
+            --background: #FFF5F7;
+            --card-bg: #FFFFFF;
+            --text: #5E4B56;
+            --text-light: #9A8B92;
+            --border: #F0DDE3;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: var(--background);
+            color: var(--text);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .menu {
+            margin-bottom: 20px;
+        }
+        .menu a {
+            margin-right: 15px;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .menu a:hover { text-decoration: underline; }
+        .search-box {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .search-box input {
+            padding: 8px;
+            width: 300px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            box-sizing: border-box;
+            background: var(--card-bg);
+            color: var(--text);
+        }
+        .search-box select {
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            background: var(--card-bg);
+            color: var(--text);
+        }
+        .search-box button {
+            padding: 8px 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .search-box button:hover {
+            background: var(--secondary);
+        }
+        .clear-link {
+            color: var(--primary);
+            padding: 8px 5px;
+            text-decoration: none;
+        }
+        .clear-link:hover { text-decoration: underline; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card-bg);
+        }
+        th, td {
+            border: 1px solid var(--border);
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background: var(--primary);
+            color: white;
+        }
+        .role-select {
+            padding: 3px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            background: var(--card-bg);
+            color: var(--text);
+        }
+        .edit-btn {
+            color: var(--primary);
+            text-decoration: none;
+            margin-right: 10px;
+        }
+        .edit-btn:hover { text-decoration: underline; }
+        .delete-btn {
+            color: #dc3545;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .delete-btn:hover { text-decoration: underline; }
+        .current-user {
+            color: var(--text-light);
+            font-style: italic;
+        }
+        .total-users {
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .pagination {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .pagination a, .pagination span {
+            display: inline-block;
+            padding: 5px 10px;
+            margin: 0 2px;
+            border: 1px solid var(--border);
+            text-decoration: none;
+            color: var(--primary);
+            background: var(--card-bg);
+        }
+        .pagination .current {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        .page-size-selector {
+            margin-bottom: 15px;
+            text-align: right;
+        }
+        .page-size-selector select {
+            padding: 5px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            background: var(--card-bg);
+            color: var(--text);
+        }
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+        }
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .jump-box {
+            margin-top: 15px;
+            text-align: right;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .jump-input {
+            width: 60px;
+            padding: 4px;
+            text-align: center;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            background: var(--card-bg);
+            color: var(--text);
+        }
+        .jump-button {
+            padding: 4px 10px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .jump-button:hover {
+            background: var(--secondary);
+        }
+
+        /* 移动端响应式表格 */
+        @media (max-width: 768px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            tr {
+                border: 1px solid var(--border);
+                margin-bottom: 10px;
+            }
+            td {
+                border: none;
+                border-bottom: 1px solid var(--border);
+                position: relative;
+                padding-left: 50%;
+            }
+            td:before {
+                position: absolute;
+                top: 8px;
+                left: 8px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                font-weight: bold;
+                content: attr(data-label);
+            }
+        }
+    </style>
+    <script>
+    (function() {
+        // 从 localStorage 读取已保存的主题
+        const theme = localStorage.getItem('selectedTheme') || 'ocean';
+
+        // 如果是自定义主题，直接覆盖 CSS 变量
+        if (theme === 'custom') {
+            const custom = localStorage.getItem('customTheme');
+            if (custom) {
+                try {
+                    const t = JSON.parse(custom);
+                    document.documentElement.style.setProperty('--primary', t.primary);
+                    document.documentElement.style.setProperty('--secondary', t.secondary);
+                    document.documentElement.style.setProperty('--background', t.background);
+                    document.documentElement.style.setProperty('--card-bg', t.cardBg);
+                    document.documentElement.style.setProperty('--text', t.text);
+                    // 移除 data-theme 属性，避免覆盖自定义变量
+                    document.documentElement.removeAttribute('data-theme');
+                    return;
+                } catch(e) {
+                    console.error('Failed to load custom theme', e);
+                }
+            }
+        }
+
+        // 否则，设置 data-theme 属性以匹配保存的主题
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+</script>
+</head>
+<body>
+    <div class="container">
+        <!-- 导航菜单 -->
+        <div class="menu">
+            <a href="/home/">Home</a>
+            <a href="/profile/">My Profile</a>
+            <a href="/settings/">Settings</a>
+            <a href="/02_Web版本/classes">Classes</a>
+            <a href="/02_Web版本/forum">Forum</a>
+            <a href="/02_Web版本/jobs">Job Search</a>
+            <a href="/admin-panel/users/">User Management</a>
+            <a href="/admin-panel/reports/">Reports</a>
+            <a href="/logout/">Logout</a>
+            <span style="float:right;">Welcome, {{ user_name }}</span>
+        </div>
+
+        <h1>User Management</h1>
+
+        <!-- 显示后端返回的消息 -->
+        {% if messages %}
+            {% for msg in messages %}
+                <div class="message {% if msg.tags == 'success' %}success{% else %}error{% endif %}">
+                    {{ msg }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- 搜索框 -->
+        <div class="search-box">
+            <form method="get" action="/admin-panel/users/">
+                <input type="text" name="search" placeholder="Search by ID, Name, Email, Student ID..." value="{{ search }}">
+                <select name="mode">
+                    <option value="exact" {% if mode == 'exact' %}selected{% endif %}>Exact Search</option>
+                    <option value="fuzzy" {% if mode == 'fuzzy' %}selected{% endif %}>Fuzzy Search (typo tolerant)</option>
+                </select>
+                <button type="submit">Search</button>
+                {% if search %}
+                <a href="/admin-panel/users/" class="clear-link">Clear</a>
+                {% endif %}
+            </form>
+        </div>
+
+        {% if users %}
+        <p class="total-users">Total users: {{ total_results }}</p>
+
+        <!-- 每页显示数量选择器 -->
+        <div class="page-size-selector">
+            <span>Show per page:</span>
+            <select id="pageSizeSelect" onchange="changePageSize()">
+                <option value="10" {% if page_size == 10 %}selected{% endif %}>10</option>
+                <option value="20" {% if page_size == 20 %}selected{% endif %}>20</option>
+                <option value="50" {% if page_size == 50 %}selected{% endif %}>50</option>
+                <option value="100" {% if page_size == 100 %}selected{% endif %}>100</option>
+            </select>
+        </div>
+
+        <!-- 用户列表表格 -->
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Student ID</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in users %}
+                    <tr>
+                        <td data-label="ID">{{ u.user_id }}</td>
+                        <td data-label="Name">{{ u.full_name }}</td>
+                        <td data-label="Email">{{ u.email }}</td>
+                        <td data-label="Student ID">{{ u.student_id }}</td>
+                        <td data-label="Role">
+                            <form method="post" action="/admin-panel/users/update-role/" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="user_id" value="{{ u.user_id }}">
+                                <select name="role" class="role-select" onchange="this.form.submit()" {% if u.user_id == user_id %}disabled{% endif %}>
+                                    <option value="student" {% if u.role == 'student' %}selected{% endif %}>Student</option>
+                                    <option value="alumni" {% if u.role == 'alumni' %}selected{% endif %}>Alumni</option>
+                                    <option value="teacher" {% if u.role == 'teacher' %}selected{% endif %}>Teacher</option>
+                                    <option value="admin" {% if u.role == 'admin' %}selected{% endif %}>Admin</option>
+                                </select>
+                            </form>
+                        </td>
+                        <td data-label="Actions">
+                            {% if u.user_id == user_id %}
+                            <span class="current-user">Current User</span>
+                            {% else %}
+                            <a href="/admin-panel/users/edit/{{ u.user_id }}/" class="edit-btn">Edit</a>
+                            <a href="/admin-panel/users/delete/{{ u.user_id }}/" class="delete-btn" onclick="return confirm('Delete user {{ u.full_name }}? This cannot be undone.')">Delete</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 分页控件 -->
+        {% if total_pages > 1 %}
+        <div class="pagination">
+            {% if current_page > 1 %}
+            <a href="?page={{ current_page|add:'-1' }}{% if search %}&search={{ search }}{% endif %}{% if mode %}&mode={{ mode }}{% endif %}{% if page_size %}&pageSize={{ page_size }}{% endif %}">Previous</a>
+            {% endif %}
+
+            {% for p in total_pages|make_list %}
+                {% if forloop.counter == current_page %}
+                <span class="current">{{ current_page }}</span>
+                {% elif forloop.counter <= current_page|add:'2' and forloop.counter >= current_page|add:'-2' %}
+                <a href="?page={{ forloop.counter }}{% if search %}&search={{ search }}{% endif %}{% if mode %}&mode={{ mode }}{% endif %}{% if page_size %}&pageSize={{ page_size }}{% endif %}">{{ forloop.counter }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if current_page < total_pages %}
+            <a href="?page={{ current_page|add:'1' }}{% if search %}&search={{ search }}{% endif %}{% if mode %}&mode={{ mode }}{% endif %}{% if page_size %}&pageSize={{ page_size }}{% endif %}">Next</a>
+            {% endif %}
+        </div>
+
+        <!-- 跳页功能 -->
+        <div class="jump-box">
+            <span>Go to page</span>
+            <input type="number" id="jumpPage" class="jump-input" min="1" max="{{ total_pages }}" value="{{ current_page }}">
+            <button class="jump-button" onclick="jumpToPage()">Jump</button>
+            <span>of {{ total_pages }}</span>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <p>No users found.</p>
+        {% endif %}
+    </div>
+
+    <script>
+        function changePageSize() {
+            const select = document.getElementById('pageSizeSelect');
+            const url = new URL(window.location.href);
+            url.searchParams.set('pageSize', select.value);
+            url.searchParams.set('page', 1);
+            window.location.href = url.toString();
+        }
+
+        function jumpToPage() {
+            const page = document.getElementById('jumpPage').value;
+            const totalPages = parseInt(document.getElementById('jumpPage').max);
+            if (page && page >= 1 && page <= totalPages) {
+                const url = new URL(window.location.href);
+                url.searchParams.set('page', page);
+                window.location.href = url.toString();
+            }
+        }
+    </script>
+</body>
+</html>

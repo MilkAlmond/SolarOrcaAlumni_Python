@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="settings">Settings - SolarOrca</title>
+    <script src="/js/theme.js"></script>
+    <style>
+        :root {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="ocean"] {
+            --primary: #006994;
+            --secondary: #48CAE4;
+            --background: #F0F8FF;
+            --card-bg: #FFFFFF;
+            --text: #1A3A4A;
+            --text-light: #5A7A8A;
+            --border: #C5D5E6;
+        }
+        [data-theme="fall"] {
+            --primary: #D35400;
+            --secondary: #F39C12;
+            --background: #FDF2E3;
+            --card-bg: #FFF8F0;
+            --text: #5D4037;
+            --text-light: #8D6E63;
+            --border: #E8D5B5;
+        }
+        [data-theme="midnight"] {
+            --primary: #00B4D8;
+            --secondary: #7B2EDA;
+            --background: #0A1929;
+            --card-bg: #1E2A3A;
+            --text: #E0E0E0;
+            --text-light: #A0AAB5;
+            --border: #2A3A4A;
+        }
+        [data-theme="blossom"] {
+            --primary: #E8A2B0;
+            --secondary: #F5C6D0;
+            --background: #FFF5F7;
+            --card-bg: #FFFFFF;
+            --text: #5E4B56;
+            --text-light: #9A8B92;
+            --border: #F0DDE3;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: var(--background);
+            color: var(--text);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            line-height: 1.4;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        .menu {
+            margin-bottom: 20px;
+        }
+
+        .menu a {
+            margin-right: 15px;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .menu a:hover {
+            text-decoration: underline;
+            color: var(--secondary);
+        }
+
+        .section {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .section h3 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .form-label {
+            display: inline-block;
+            width: 160px;
+            font-weight: bold;
+            color: var(--text);
+        }
+
+        input {
+            width: 280px;
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            background: var(--card-bg);
+            color: var(--text);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        button {
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: background 0.3s ease;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        button:hover:not(:disabled) {
+            background: var(--secondary);
+        }
+
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .password-requirements {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 5px;
+            margin-left: 160px;
+        }
+
+        .requirement-item {
+            margin: 3px 0;
+        }
+
+        .requirement-valid {
+            color: #28a745;
+        }
+
+        .requirement-invalid {
+            color: #dc3545;
+        }
+
+        .requirement-check {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .theme-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin: 15px 0;
+        }
+
+        .theme-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            color: white;
+        }
+
+        .theme-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .ocean-btn {
+            background: #006994;
+            color: white;
+        }
+
+        .fall-btn {
+            background: #D35400;
+            color: white;
+        }
+
+        .midnight-btn {
+            background: #0A1929;
+            color: white;
+        }
+
+        .blossom-btn {
+            background: #E8A2B0;
+            color: #5E4B56;
+        }
+
+        .custom-btn {
+            background: linear-gradient(135deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3);
+            color: white;
+        }
+
+        .language-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+
+        .lang-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: var(--primary);
+            color: white;
+        }
+
+        .lang-btn:hover {
+            background: var(--secondary);
+        }
+
+        .theme-info, .lang-info {
+            margin-top: 10px;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .theme-info span, .lang-info span {
+            font-weight: bold;
+            color: var(--text);
+        }
+
+        a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 650px) {
+            .form-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .form-label {
+                width: auto;
+                margin-bottom: 5px;
+            }
+
+            input {
+                width: 100%;
+                max-width: 280px;
+            }
+
+            .password-requirements {
+                margin-left: 0;
+            }
+        }
+    </style>
+    <script>
+        // 前端密码强度验证
+        function validatePassword() {
+            const password = document.getElementById('newPassword').value;
+            const confirm = document.getElementById('confirmPassword').value;
+
+            const minLength = password.length >= 6;
+            const hasUpper = /[A-Z]/.test(password);
+            const hasLower = /[a-z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+            const match = password === confirm && password !== '';
+
+            document.getElementById('minLength').className = minLength ? 'requirement-item requirement-valid' : 'requirement-item requirement-invalid';
+            document.getElementById('hasUpper').className = hasUpper ? 'requirement-item requirement-valid' : 'requirement-item requirement-invalid';
+            document.getElementById('hasLower').className = hasLower ? 'requirement-item requirement-valid' : 'requirement-item requirement-invalid';
+            document.getElementById('hasNumber').className = hasNumber ? 'requirement-item requirement-valid' : 'requirement-item requirement-invalid';
+            document.getElementById('hasSpecial').className = hasSpecial ? 'requirement-item requirement-valid' : 'requirement-item requirement-invalid';
+            document.getElementById('passwordsMatch').className = match ? 'requirement-item requirement-valid' : 'requirement-item requirement-invalid';
+
+            const allValid = minLength && hasUpper && hasLower && hasNumber && hasSpecial && match;
+            const btn = document.getElementById('changePwdBtn');
+            if (btn) btn.disabled = !allValid;
+
+            return allValid;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const newPwd = document.getElementById('newPassword');
+            const confirmPwd = document.getElementById('confirmPassword');
+            if (newPwd) newPwd.addEventListener('keyup', validatePassword);
+            if (confirmPwd) confirmPwd.addEventListener('keyup', validatePassword);
+            validatePassword();
+        });
+    </script>
+    <script>
+    (function() {
+        // 从 localStorage 读取已保存的主题
+        const theme = localStorage.getItem('selectedTheme') || 'ocean';
+
+        // 如果是自定义主题，直接覆盖 CSS 变量
+        if (theme === 'custom') {
+            const custom = localStorage.getItem('customTheme');
+            if (custom) {
+                try {
+                    const t = JSON.parse(custom);
+                    document.documentElement.style.setProperty('--primary', t.primary);
+                    document.documentElement.style.setProperty('--secondary', t.secondary);
+                    document.documentElement.style.setProperty('--background', t.background);
+                    document.documentElement.style.setProperty('--card-bg', t.cardBg);
+                    document.documentElement.style.setProperty('--text', t.text);
+                    // 移除 data-theme 属性，避免覆盖自定义变量
+                    document.documentElement.removeAttribute('data-theme');
+                    return;
+                } catch(e) {
+                    console.error('Failed to load custom theme', e);
+                }
+            }
+        }
+
+        // 否则，设置 data-theme 属性以匹配保存的主题
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+</script>
+</head>
+<body>
+
+<div class="container">
+    <!-- 导航菜单 -->
+    <div class="menu">
+        <a href="/home/" data-i18n="home">Home</a>
+        <a href="/profile/" data-i18n="my_profile">My Profile</a>
+        <a href="/profile/edit/" data-i18n="edit_profile">Edit Profile</a>
+        <a href="/settings/" data-i18n="settings">Settings</a>
+        <a href="/02_Web版本/classes" data-i18n="classes">Classes</a>
+        <a href="/02_Web版本/forum" data-i18n="forum">Forum</a>
+        <a href="/02_Web版本/jobs" data-i18n="job_search">Job Search</a>
+        {% if user_role == 'admin' %}
+        <a href="/admin-panel/users/" data-i18n="admin">Admin</a>
+        {% endif %}
+        <a href="/logout/" data-i18n="logout">Logout</a>
+        <span style="float:right;"><span data-i18n="welcome_prefix">Welcome</span>, {{ user_name }}</span>
+    </div>
+
+    <h1 data-i18n="settings">Settings</h1>
+
+    <!-- 显示后端返回的消息 -->
+    {% if messages %}
+        {% for msg in messages %}
+            <div class="message {% if msg.tags == 'success' %}success{% else %}error{% endif %}">
+                {{ msg }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- 修改密码 -->
+    <div class="section">
+        <h3 data-i18n="change_password">Change Password</h3>
+        <form action="/change-password/" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="currentPassword" class="form-label" data-i18n="current_password">Current Password:</label>
+                <input type="password" id="currentPassword" name="current_password" required>
+            </div>
+            <div class="form-group">
+                <label for="newPassword" class="form-label" data-i18n="new_password">New Password:</label>
+                <input type="password" id="newPassword" name="new_password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword" class="form-label" data-i18n="confirm_password">Confirm New Password:</label>
+                <input type="password" id="confirmPassword" name="confirm_password" required>
+            </div>
+
+            <!-- 密码要求列表 -->
+            <div class="password-requirements">
+                <strong data-i18n="password_requirements">Password Requirements:</strong>
+                <div id="minLength" class="requirement-item requirement-invalid">
+                    <span class="requirement-check">✗</span> <span data-i18n="at_least_6_characters">At least 6 characters</span>
+                </div>
+                <div id="hasUpper" class="requirement-item requirement-invalid">
+                    <span class="requirement-check">✗</span> <span data-i18n="at_least_1_uppercase">At least 1 uppercase letter (A-Z)</span>
+                </div>
+                <div id="hasLower" class="requirement-item requirement-invalid">
+                    <span class="requirement-check">✗</span> <span data-i18n="at_least_1_lowercase">At least 1 lowercase letter (a-z)</span>
+                </div>
+                <div id="hasNumber" class="requirement-item requirement-invalid">
+                    <span class="requirement-check">✗</span> <span data-i18n="at_least_1_number">At least 1 number (0-9)</span>
+                </div>
+                <div id="hasSpecial" class="requirement-item requirement-invalid">
+                    <span class="requirement-check">✗</span> <span data-i18n="at_least_1_special">At least 1 special character (!@#$%^&*)</span>
+                </div>
+                <div id="passwordsMatch" class="requirement-item requirement-invalid">
+                    <span class="requirement-check">✗</span> <span data-i18n="passwords_match">Passwords match</span>
+                </div>
+            </div>
+
+            <button type="submit" id="changePwdBtn" disabled data-i18n="change_password">Change Password</button>
+        </form>
+    </div>
+
+    <!-- 主题设置 -->
+    <div class="section">
+        <h3 data-i18n="theme">Theme</h3>
+        <div class="theme-buttons">
+            <button onclick="window.setTheme('ocean')" class="theme-btn ocean-btn"><span data-i18n="ocean_breeze">Ocean Breeze</span></button>
+            <button onclick="window.setTheme('fall')" class="theme-btn fall-btn"><span data-i18n="fall_forest">Fall Forest</span></button>
+            <button onclick="window.setTheme('midnight')" class="theme-btn midnight-btn"><span data-i18n="midnight">Midnight</span></button>
+            <button onclick="window.setTheme('blossom')" class="theme-btn blossom-btn"><span data-i18n="blossom">Blossom</span></button>
+            <button onclick="window.location.href='/custom-theme/'" class="theme-btn custom-btn"><span data-i18n="custom">Custom</span></button>
+        </div>
+        <p class="theme-info"><span data-i18n="current_theme">Current theme:</span> <span id="currentTheme">Ocean Breeze</span></p>
+    </div>
+
+    <!-- 语言设置 -->
+    <div class="section">
+        <h3 data-i18n="language">Language</h3>
+        <div class="language-buttons">
+            <button onclick="window.setLanguage('en')" class="lang-btn"><span data-i18n="english">English</span></button>
+            <button onclick="window.setLanguage('zh')" class="lang-btn"><span data-i18n="chinese">中文</span></button>
+        </div>
+        <p class="lang-info"><span data-i18n="current_language">Current language:</span> <span id="currentLanguage">English</span></p>
+    </div>
+</div>
+
+</body>
+</html>

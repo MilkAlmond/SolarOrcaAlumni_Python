@@ -1,0 +1,29 @@
+# ============================================
+# Web 版本依赖文件 (Django 校友系统)
+# 使用方法: pip install -r requirements_web.txt
+# ============================================
+
+# Django 核心框架
+Django==5.0.6
+
+# SQL Server 数据库驱动（支持 Django 5.0）
+mssql-django==1.3.1
+
+# ODBC 数据库连接驱动
+pyodbc==5.1.0
+
+# 时区支持（Django 依赖）
+pytz==2024.1
+tzdata==2024.1
+
+# 其他 Django 依赖
+asgiref==3.8.1
+sqlparse==0.5.0
+
+# ============================================
+# 运行说明
+# 1. 安装依赖：pip install -r requirements_web.txt
+# 2. 确保 SQL Server 已安装并配置 ODBC Driver 17
+# 3. 修改 settings.py 中的数据库连接信息
+# 4. 运行：python manage.py runserver 8081
+# ============================================
